@@ -1,0 +1,27 @@
+{
+  "Setting": {
+    "On": true,
+    "Time": 60,
+    "Count": 5,
+    "Levels": "Warning;Error"
+  },
+  "Sms": {
+    "On": true,
+    "Url": null,
+    "Method": "GET",
+    "Content": "IP=On {IP} Message= {ErrorMessage} Project= {ProjectName}",
+    "ContentType": "application/json"
+  },
+  "Email": {
+    "On": false,
+    "Host": "smtp.qq.com",
+    "Port": 587,
+    "UserName": "xxxxxxxx@qq.com",
+    "Password": "xxxxxxxxxxxxxxxx",
+    "Receiver": "xxxxxxxxxxx@qq.com",
+    "CC": "xxxxxxxxxxx@163.com;xxxxxxxx@126.com",
+    "Title": "Test Send Mail Subject.{ErrorMessage}",
+    "Content": "在 {IP} 上发生了异常 {ErrorMessage} <h2>项目：</h2><div>{ProjectName}</div>",
+    "SSL": true
+  }
+}

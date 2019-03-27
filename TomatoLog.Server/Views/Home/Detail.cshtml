@@ -1,0 +1,164 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Detail Page";
+    string proj = ViewBag.Proj;
+    string label = ViewBag.Label;
+    string keyword = ViewBag.Keyword;
+
+    var fileName = System.IO.Path.Combine(proj, label);
+}
+<h2>@fileName</h2>
+<a id="btnField" href="###" data-toggle="modal" data-target="#fieldSetting">选择列</a>
+<div class="form-group">
+    <form>
+        <input type="text" value="@proj" name="proj" id="proj" hidden="hidden" />
+        <input type="text" value="@label" name="label" id="label" hidden="hidden" />
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                <input type="text" value="@keyword" class="form-control" name="keyword" id="keyword" placeholder="输入查询条件，支持MongoDB/ES语法" />
+            </div>
+            <div class="form-group col-md-1">
+                <button type="submit" class="form-control btn btn-primary mb-2">搜索</button>
+            </div>
+        </div>
+    </form>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" name="EventId" class="hidden">EventId</th>
+            <th scope="col" name="Timestamp" class="hidden">Timestamp</th>
+            <th scope="col" name="ProcessId" class="hidden">ProcessId</th>
+            <th scope="col" name="ProcessName" class="hidden">ProcessName</th>
+            <th scope="col" name="ProjectName" class="hidden">ProjectName</th>
+            <th scope="col" name="ProjectLabel" class="hidden">ProjectLabel</th>
+            <th scope="col" name="ErrorMessage" class="hidden">ErrorMessage</th>
+            <th scope="col" name="IP" class="hidden">IP</th>
+            <th scope="col" name="MachineName" class="hidden">MachineName</th>
+            <th scope="col" name="IPList" class="hidden">IPList</th>
+            <th scope="col" name="LogLevel" class="hidden">LogLevel</th>
+            <th scope="col" name="StackTrace" class="hidden">StackTrace</th>
+            <th scope="col" name="ThreadId" class="hidden">ThreadId</th>
+            <th scope="col" name="UserName" class="hidden">UserName</th>
+            <th scope="col" name="Version" class="hidden">Version</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            var msg = JsonConvert.DeserializeObject<LogMessage>(log);
+            <tr data-toggle="modal" data-target="#showDetail" data-whatever="@log">
+                <td name="EventId" class="hidden">@msg.EventId</td>
+                <td name="Timestamp" class="hidden">@msg.Timestamp</td>
+                <td name="ProcessId" class="hidden">@msg.ProcessId</td>
+                <td name="ProcessName" class="hidden">@msg.ProcessName</td>
+                <td name="ProjectName" class="hidden">@msg.ProjectName</td>
+                <td name="ProjectLabel" class="hidden">@msg.ProjectLabel</td>
+                <td name="ErrorMessage" class="hidden">@msg.ErrorMessage</td>
+                <td name="IP" class="hidden">@msg.IP</td>
+                <td name="MachineName" class="hidden">@msg.MachineName</td>
+                <td name="IPList" class="hidden">@string.Join("/", msg.IPList)</td>
+                <td name="LogLevel" class="hidden">@msg.LogLevel</td>
+                <td name="StackTrace" class="hidden">@msg.StackTrace</td>
+                <td name="ThreadId" class="hidden">@msg.ThreadId</td>
+                <td name="UserName" class="hidden">@msg.UserName</td>
+                <td name="Version" class="hidden">@msg.Version</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="showDetail" tabindex="-1" role="dialog" aria-labelledby="showDetail" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="showDetail">详细信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea style="height:608px;width:570px;" disabled="disabled"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fieldSetting" tabindex="-1" role="dialog" aria-labelledby="fieldSetting" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fieldSetting">选择显示的列</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <select multiple="multiple" name="fields" id="fields">
+                        <option value="EventId">EventId</option>
+                        <option value="Timestamp">Timestamp</option>
+                        <option value="IP">IP</option>
+                        <option value="IPList">IPList</option>
+                        <option value="ErrorMessage">ErrorMessage</option>
+                        <option value="StackTrace">StackTrace</option>
+                        <option value="LogLevel">LogLevel</option>
+                        <option value="MachineName">MachineName</option>
+                        <option value="ProcessId">ProcessId</option>
+                        <option value="ProcessName">ProcessName</option>
+                        <option value="ProjectLabel">ProjectLabel</option>
+                        <option value="ProjectName">ProjectName</option>
+                        <option value="ThreadId">ThreadId</option>
+                        <option value="UserName">UserName</option>
+                        <option value="Version">Version</option>
+                    </select>
+                    <input type="hidden" value="@string.Join(',',ViewBag.FIELDS)" id="txtFields" />
+                    <input type="hidden" value="@proj" name="proj" id="proj" hidden="hidden" />
+                    <input type="hidden" value="@label" name="label" id="label" hidden="hidden" />
+                    <input type="hidden" value="@keyword" name="keyword" id="keyword" />
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="保存" id="btnSave" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<link href="~/lib/bootstrap/dist/css/bootstrap-duallistbox.min.css" rel="stylesheet" />
+@section Scripts{
+    <script src="~/lib/bootstrap/dist/js/jquery.bootstrap-duallistbox.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var fs = $("#txtFields").val().split(",");
+            $(fs).each(function (d, f) {
+                $("#fields option[value='" + f + "']").attr("selected", "selected");
+                $("table tr th[name='" + f + "']").removeClass("hidden");
+                $("table tr td[name='" + f +"']").removeClass("hidden");
+            });
+            console.log($("#fields option").val());
+            var fields = $('#fields').bootstrapDualListbox({
+                nonSelectedListLabel: '未选择',
+                selectedListLabel: '已选择',
+                preserveSelectionOnMove: 'moved',
+                showFilterInputs: false,
+                moveOnSelect: false,
+                nonSelectedFilter: null
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $("#btnSave").on('click', function () {
+            var _val = $('#fields').val()
+            console.log(_val);
+            console.log(fields);
+        });
+        $('#showDetail').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var recipient = button.data('whatever');
+            recipient = JSON.stringify(recipient, null, 5);
+            var modal = $(this);
+            modal.find('.modal-body textarea').val(recipient);
+        })
+    </script>
+}
