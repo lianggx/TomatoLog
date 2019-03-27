@@ -25,6 +25,54 @@ Install-Package TomatoLog.Client.RabbitMQ
 
 ### 部署服务端
 
-首先，下载服务端压缩包文件，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
+首先，下载服务端压缩包文件 ![TomatoLog](https://github.com/lianggx/TomatoLog/releases/download/1.0.0/TomatoLog.zip) ，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
 
 接下来，解压文件，修改 appsetting.Environment.json 文件将服务器进行配置，将配置好的服务端部署到你的服务器上，可以为 TomatoLog 选择 IIS 或者其它托管方式，服务端默认运行端口为：20272.
+
+### 编辑服务端配置文件
+
+```
+{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "TomatoLog": {
+    "Cache-Redis": null, // 过滤器会使用该分布式缓存进行策略考量，如果有配置
+    "Config": {
+      "SysConfig": "Config/SysConfig.json" // 系统配置文件，可通过Web控制台进行配置
+    },
+    "Storage": {
+      "Type": "ToFile", //ToFile/ToES/ToMongoDB 可以选择的存储方式
+      "File": "D:\\TomatoLog\\Storage", // 如果Type选择了 ToFile ，则这里必须指定绝对路径
+      "ES": "http://127.0.0.1:9200/", // 如果Type选择了ToES，这里必须配置 Elasticsearch 服务地址
+      "MongoDB": "mongodb://root:root@127.0.0.1:27017/admin" //如果Type选择了ToMongoDB，这里必须配置 ToMongoDB 数据库链接
+    },
+    "Flow": {
+      "Type": "RabbitMQ", // Redis/RabbitMQ/Kafaka 这里指定客户端和服务器的传输管道类型，两端配置必须一致
+      "Redis": {
+        "Connection": null,
+        "Channel": "TomatoLogChannel"
+      },
+      "RabbitMQ": { // 如果使用了 RabbitMQ，则必须配置该节点
+        "Host": "127.0.0.1",
+        "Port": 5672,
+        "UserName": "root",
+        "Password": "123456",
+        "vHost": "TomatoLog",
+        "Exchange": "TomatoLog-Exchange",
+        "ExchangeType": "direct",
+        "QueueName": "TomatoLog-Queue",
+        "RouteKey": "All",
+        "Channels": 1 // 运行的消息队列实例数量
+      },
+      "Kafka": null // 待实现
+    }
+  }
+}
+
+```
