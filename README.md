@@ -11,13 +11,15 @@ TomatoLog server also provider three method to log store,Their is Files/MongoDB/
 ![foundation](https://github.com/lianggx/pictures/blob/master/TomatoLog/system.png)
 
 
-##Get Started
+
+## Get Started
 
 ### client
 
+The below choose a client any one.
+
 ``` C#
 Install-Package TomatoLog.Client.Redis
-// or
 Install-Package TomatoLog.Client.RabbitMQ
 ```
 
