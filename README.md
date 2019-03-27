@@ -23,3 +23,8 @@ Install-Package TomatoLog.Client.Redis
 Install-Package TomatoLog.Client.RabbitMQ
 ```
 
+### 部署服务端
+
+首先，下载服务端压缩包文件，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
+
+接下来，解压文件，修改 appsetting.Environment.json 文件将服务器进行配置，将配置好的服务端部署到你的服务器上，可以为 TomatoLog 选择 IIS 或者其它托管方式，服务端默认运行端口为：20272.
