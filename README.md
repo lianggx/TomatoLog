@@ -1,35 +1,37 @@
 # TomatoLog
-TomatoLog 是一个基于 .NETCore 平台的服务。
+TomatoLog is a service which based on the .net Core platform.
 
-The TomatoLog 是一个中间件，包含客户端、服务端，非常容易使用和部署。
+### ![中文文档](https://github.com/lianggx/TomatoLog/blob/master/README_Zh-cn.md)
 
-TomatoLog 的客户端和服务端目前都是基于 .NETCore 版本,客户端提供了三种日志流传输方式，目前实现了 Redis 和 RabbitMQ 流，剩余 Kafka 流式未实现。如果希望使用非 .NETCoer 平台的客户端，你可以自己开放其它第三方语言的客户端，通过实现 TomatoLog 传输协议，将数据传送到管道(Redis/RabbitMQ)中即可。
+The TomatoLog is a middleware that includes both client and server.  So it is very easy to be used and deployed.
 
-TomatoLog 服务端还提供了三种存储日志的方式，分别是 File、MongoDB、Elasticsearch，存储方式可以通过配置文件指定。在 TomatoLog 服务端，我们还提供了一个Web 控制台，通过该控制台，可以对日志进行查询、搜索，对服务过滤器进行配置，警报配置、通知发送等等，其中，可使用的警报通知方式有：SMS 和 Email 两种方式，但是，SMS 其本质是一个 Http 请求，通过 SMS 的配置，可以实现向所有提供了 Http 接口的网关发送通知。
+The client and server of TomatoLog are both built on the .net Core. Client logging data can be transferred through 3 kinds of streaming: Redis Streaming, RabbitMQ Streaming, and Kafka Streaming (which will be supported later). For the applications which not built-on .net core, you can transfer the logging data to the pipeline of Redis/RabbitMQ, by implementing the TomatoLog transferring protocol.
 
-## TomatoLog 系统架构
+The TomatoLog Server can store the logging data into File, MongoDB, or Elastic Search. This can be set through the configuration file.  The TomatoLog Server provides a Web Console, which we can inquiry or search the logging data, or maintain the server filters/alter setting/notification setting.  The notifications can be sent through SMS or email.  Since the SMS messages are sent through HTTP request, so by using the different SMS HTTP request settings, we can send the notifications to the gateways which receiving messages through HTTP requests.
+
+## TomatoLog System Architecture
 ![foundation](https://github.com/lianggx/pictures/blob/master/TomatoLog/system.png)
 
 
 
 ## Get Started
 
-### 使用客户端
+### Using the client side
 
-选择安装以下两种客户端中的任意一项
+Choose to install either of the following two clients
 
 ``` C#
 Install-Package TomatoLog.Client.Redis
 Install-Package TomatoLog.Client.RabbitMQ
 ```
 
-### 部署服务端
+### Setup the server side
 
-首先，下载服务端压缩包文件 ![TomatoLog](https://github.com/lianggx/TomatoLog/releases/download/1.0.0/TomatoLog.zip) ，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
+download the server-side compressed package file ![TomatoLog](https://github.com/lianggx/TomatoLog/releases/download/1.0.0/TomatoLog.zip)  (which only contains the project files)，You also need to install the .net core SDK 2.2+ in the hosting environment.
 
-接下来，解压文件，修改 appsetting.Environment.json 文件将服务器进行配置，将配置好的服务端部署到你的服务器上，可以为 TomatoLog 选择 IIS 或者其它托管方式，服务端默认运行端口为：20272.
+2) Extract the file, edit the appsetting.Environment.json file for the server side configurations, then deploy the configured server to your hosting environment. , TomatoLog can be hosted by IIS or other non-IIS Web Servers. The default port for the server is 20272.
 
-### 编辑服务端配置文件
+### Editing server configuration file
 
 ```
 {
@@ -42,23 +44,23 @@ Install-Package TomatoLog.Client.RabbitMQ
     }
   },
   "TomatoLog": {
-    "Cache-Redis": null, // 过滤器会使用该分布式缓存进行策略考量，如果有配置
+    "Cache-Redis": null, // the strategy for the distribution buffering policy for the filter
     "Config": {
-      "SysConfig": "Config/SysConfig.json" // 系统配置文件，可通过Web控制台进行配置
+      "SysConfig": "Config/SysConfig.json" // the system configuration file, which can be configured through Web Console
     },
     "Storage": {
-      "Type": "ToFile", //ToFile/ToES/ToMongoDB 可以选择的存储方式
-      "File": "D:\\TomatoLog\\Storage", // 如果Type选择了 ToFile ，则这里必须指定绝对路径
-      "ES": "http://127.0.0.1:9200/", // 如果Type选择了ToES，这里必须配置 Elasticsearch 服务地址
-      "MongoDB": "mongodb://root:root@127.0.0.1:27017/admin" //如果Type选择了ToMongoDB，这里必须配置 ToMongoDB 数据库链接
+      "Type": "ToFile", //ToFile/ToES/ToMongoDB 
+      "File": "D:\\TomatoLog\\Storage", // If ToFile is selected, need to specify the absolution path at here
+      "ES": "http://127.0.0.1:9200/", // if ToES is selected, need to specify the URL for the Elastic Search server at here 
+      "MongoDB": "mongodb://root:root@127.0.0.1:27017/admin" // if ToMongoDB is selected, need to specify the connection string for MongoDB at here 
     },
     "Flow": {
-      "Type": "RabbitMQ", // Redis/RabbitMQ/Kafaka 这里指定客户端和服务器的传输管道类型，两端配置必须一致
+      "Type": "RabbitMQ", // Redis/RabbitMQ/Kafaka  // the transferring protocol, which should be matched at both server & client
       "Redis": {
         "Connection": null,
         "Channel": "TomatoLogChannel"
       },
-      "RabbitMQ": { // 如果使用了 RabbitMQ，则必须配置该节点
+      "RabbitMQ": { // if using RibbitMQ at above, the node need to be configured
         "Host": "127.0.0.1",
         "Port": 5672,
         "UserName": "root",
@@ -68,9 +70,9 @@ Install-Package TomatoLog.Client.RabbitMQ
         "ExchangeType": "direct",
         "QueueName": "TomatoLog-Queue",
         "RouteKey": "All",
-        "Channels": 1 // 运行的消息队列实例数量
+        "Channels": 1 // the number of instances of message queue
       },
-      "Kafka": null // 待实现
+      "Kafka": null // under construction
     }
   }
 }
