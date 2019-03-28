@@ -10,31 +10,16 @@ namespace TomatoLog.Server.Models
     public class ReportViewModel
     {
         public SettingModel Setting { get; set; }
-        /// <summary>
-        ///  短信警报配置
-        /// </summary>
         public SmsModel Sms { get; set; }
-
-        /// <summary>
-        ///  邮件警报配置
-        /// </summary>
         public EmailModel Email { get; set; }
     }
 
     public class SettingModel
     {
+        public string ProjectName { get; set; }
         public bool On { get; set; }
-        /// <summary>
-        ///  警报周期，以S为单位
-        /// </summary>
         public int Time { get; set; }
-        /// <summary>
-        /// 发生 N 次后发送一次警报
-        /// </summary>
         public int Count { get; set; }
-        /// <summary>
-        ///  LogLevel
-        /// </summary>
         public string Levels { get; set; }
     }
 

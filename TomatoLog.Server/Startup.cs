@@ -56,6 +56,7 @@ namespace TomatoLog.Server
                 services.AddDistributedMemoryCache();
             }
             services.AddSingleton<SysConfigManager>(new SysConfigManager(this.Configuration));
+            services.AddSingleton<ProConfigManager>(new ProConfigManager(this.Configuration));
             services.AddLogWriter(this.Configuration);
             services.AddSingleton<HttpClient>();
             services.AddMvc();
@@ -67,6 +68,7 @@ namespace TomatoLog.Server
                               ILoggerFactory factory,
                               IDistributedCache cache,
                               SysConfigManager sysConfig,
+                              ProConfigManager proConfig,
                               IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
@@ -78,7 +80,7 @@ namespace TomatoLog.Server
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-            app.UseTomatoLog(this.Configuration, cache, sysConfig,lifetime);
+            app.UseTomatoLog(this.Configuration, cache, sysConfig, proConfig, lifetime);
 
             app.UseMvc(routes =>
             {

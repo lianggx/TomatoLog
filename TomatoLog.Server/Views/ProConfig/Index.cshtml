@@ -1,0 +1,67 @@
+﻿@model List<ReportViewModel>
+<div class="container">
+    <div id="saveTips" class="alert alert-success hidden text-center">
+        <strong>Success！</strong>
+    </div>
+    <h2>TomatoLog Project Report Config</h2>
+    <h2 id="tipsMessage" class="p-3 mb-2 bg-success text-white" data-placement="top"></h2>
+    <table class="table">
+        <thead>
+            <tr class="row">
+                <th>ProjectName</th>
+                <th>On</th>
+                <th>Time</th>
+                <th>Count</th>
+                <th>Levels</th>
+                <th>Options<a href="/ProConfig/Detail"><strong>+New</strong></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                var sett = c.Setting;
+                <tr class="row">
+                    <td>@sett.ProjectName</td>
+                    <td>@sett.On</td>
+                    <td>@sett.Time</td>
+                    <td>@sett.Count</td>
+                    <td>@sett.Levels</td>
+                    <td>
+                        <a href="/ProConfig/Detail?projectName=@sett.ProjectName">Detail</a>
+                        <a href="###" onclick="OnDelete(this,'@sett.ProjectName')">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $.postJSON = function (url, data, callback) {
+            return jQuery.ajax({
+                'type': 'POST',
+                'url': url,
+                'contentType': 'application/json',
+                'data': JSON.stringify(data),
+                'dataType': 'json',
+                'success': callback
+            });
+        };
+
+        function OnDelete(obj, projectName) {
+            if (confirm('Do you wants delete this?')) {
+                $.postJSON("ProConfig/Delete", { "ProjectName": projectName }, function (data) {
+                    debugger;
+                    if (data.code != 0) {
+                        $("#saveTips strong").text(data.message).removeClass("hidden");
+                    }
+                    else {
+                        $("#saveTips").removeClass("hidden").fadeOut(3000);
+                        $(obj).parents("tr").remove();
+                    }
+                });
+            }
+        }
+    </script>
+}

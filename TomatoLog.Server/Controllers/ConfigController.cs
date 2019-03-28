@@ -1,16 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json.Linq;
-using System.Collections;
-using TomatoLog.Server.Models;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TomatoLog.Server.BLL;
+using TomatoLog.Server.Models;
 
 namespace TomatoLog.Server.Controllers
 {
@@ -25,35 +17,35 @@ namespace TomatoLog.Server.Controllers
 
         public IActionResult Index()
         {
-            var model = sysConfigManager.Report;
+            var model = sysConfigManager.ConfigObject;
             return View(model);
         }
 
         [HttpPost("Setting")]
         public IActionResult Setting([FromForm]SettingModel model)
         {
-            sysConfigManager.Report.Setting = model;
+            sysConfigManager.ConfigObject.Setting = model;
             return Save();
         }
 
         [HttpPost("Sms")]
         public IActionResult Sms([FromForm]SmsModel model)
         {
-            sysConfigManager.Report.Sms = model;
+            sysConfigManager.ConfigObject.Sms = model;
             return Save();
         }
 
         [HttpPost("Email")]
         public IActionResult Email([FromForm]EmailModel model)
         {
-            sysConfigManager.Report.Email = model;
+            sysConfigManager.ConfigObject.Email = model;
             return Save();
         }
 
         private IActionResult Save()
         {
-            var report = sysConfigManager.Save(sysConfigManager.Report);
-            TempData["Succees"] = true;
+            sysConfigManager.Save();
+            TempData["Success"] = true;
             return RedirectToAction("Index");
         }
     }

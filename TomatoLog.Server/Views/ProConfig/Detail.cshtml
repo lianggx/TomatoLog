@@ -1,0 +1,108 @@
+﻿@model ProjectConfigViewModel
+@{
+    var key = "Success";
+    var show = false;
+    if (TempData[key] != null)
+    {
+        show = Convert.ToBoolean(TempData[key]);
+        TempData.Remove(key);
+    }
+}
+
+<div class="container">
+    <div id="saveTips" class="alert alert-success hidden text-center">
+        <strong>保存成功！</strong>
+    </div>
+    @if (!ViewBag.IsValid)
+    {
+        <div class="bg-warning">
+            <h3>Error On:</h3>
+            <div class="text-danger">
+                @Html.ValidationSummary()
+            </div>
+        </div>
+    }
+    <h2>TomatoLog警报配置</h2>
+    <form class="form-group" action="/ProConfig/Detail" method="post">
+        <input type="submit" value="保存" class="btn btn-primary" />
+        <a href="/ProConfig" class="btn btn-success">返回列表</a>
+        <div class="panel panel-info">
+            <div class="panel-heading bg-info"></div>
+            <div class="panel-body">
+                ProjectName <input class="form-control" type="text" id="Setting_ProjectName" name="Setting_ProjectName" value="@Model.Setting_ProjectName" />
+                是否启用 <input class="form-control" type="text" id="Setting_On" name="Setting_On" value="@Model.Setting_On.ToString().ToLower()" />
+                警报周期（秒）<input class="form-control" type="text" id="Setting_Time" name="Setting_Time" value="@Model.Setting_Time" />
+                触发阀值<input class="form-control" type="text" id="Setting_Count" name="Setting_Count" value="@Model.Setting_Count" />
+                监控级别(支持 Trace;Debug;Information;Warning;Error;Critical;None，监控多个级别以分号进行分隔)
+                <input class="form-control" type="text" id="Setting_Levels" name="Setting_Levels" value="@Model.Setting_Levels" />
+            </div>
+        </div>
+        <div class="panel panel-danger">
+            <div class="panel-heading bg-danger"></div>
+            <div class="panel-body">
+                是否启用<input class="form-control" type="text" id="Sms_On" name="Sms_On" value="@Model.Sms_On.ToString().ToLower()" />
+                Url<input class="form-control" type="text" id="Sms_Url" name="Sms_Url" value="@Model.Sms_Url" />
+                HttpMethoed<input class="form-control" type="text" id="Sms_Method" name="Sms_Method" value="@Model.Sms_Method" />
+                Content-Type<input class="form-control" type="text" id="Sms_ContentType" name="Sms_ContentType" value="@Model.Sms_ContentType" />
+                短信内容(支持内置变量,<a href="#SysVariable">查看变量</a>)
+                <textarea class="form-control" id="Sms_Content" name="Sms_Content">@Model.Sms_Content</textarea>
+            </div>
+        </div>
+        <div class="panel panel-success">
+            <div class="panel-heading bg-success"></div>
+            <div class="panel-body">
+                是否启用<input class="form-control" type="text" id="Email_On" name="Email_On" value="@Model.Email_On.ToString().ToLower()" />
+                账号<input class="form-control" type="text" id="Email_UserName" name="Email_UserName" value="@Model.Email_UserName" />
+                密码<input class="form-control" type="text" id="Email_Password" name="Email_Password" value="@Model.Email_Password" />
+                主机<input class="form-control" type="text" id="Email_Host" name="Email_Host" value="@Model.Email_Host" />
+                端口<input class="form-control" type="text" id="Email_Port" name="Email_Port" value="@Model.Email_Port" />
+                收件人<input class="form-control" type="text" id="Email_Receiver" name="Email_Receiver" value="@Model.Email_Receiver" />
+                抄送<input class="form-control" type="text" id="Email_CC" name="Email_CC" value="@Model.Email_CC" />
+                主题(支持内置变量,<a href="#SysVariable">查看变量</a>)
+                <input class="form-control" type="text" id="Email_Title" name="Email_Title" value="@Model.Email_Title" />
+                内容(支持内置变量,<a href="#SysVariable">查看变量</a>)
+                <textarea class="form-control" id="Email_Content" name="Email_Content">@Model.Email_Content</textarea>
+                SSL<input class="form-control" type="tel" id="Email_SSL" name="Email_SSL" value="@Model.Email_SSL.ToString().ToLower()" />
+            </div>
+        </div>
+    </form>
+    <div class="panel panel-warning">
+        <a name="SysVariable"></a>
+        <div class="panel-heading bg-warning">
+            <label>系统内置变量（区分大小写）</label>
+        </div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <li class="list-group-item">时间戳：{Timestamp}</li>
+                <li class="list-group-item">源IP：{IP}</li>
+                <li class="list-group-item">源IP列表：{IPList}</li>
+                <li class="list-group-item">主题：{ErrorMessage}</li>
+                <li class="list-group-item">堆栈：{StackTrace}</li>
+                <li class="list-group-item">日志级别：{LogLevel}</li>
+                <li class="list-group-item">主机名称：{MachineName}</li>
+                <li class="list-group-item">进程ID：{ProcessId}</li>
+                <li class="list-group-item">进程名称：{ProcessName}</li>
+                <li class="list-group-item">项目标签：{ProjectLabel}</li>
+                <li class="list-group-item">项目名称：{ProjectName}</li>
+                <li class="list-group-item">线程ID：{ThreadId}</li>
+                <li class="list-group-item">主机用户名：{UserName}</li>
+                <li class="list-group-item">版本号：{Version}</li>
+                <li class="list-group-item">扩展信息：{Extra}</li>
+            </ul>
+        </div>
+    </div>
+
+    @section Scripts{
+        @if (show)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#saveTips").removeClass("hidden");
+                    var alertClose = setTimeout(function () {
+                        $("#saveTips").slideUp();
+                    }, 500);
+                })
+            </script>
+        }
+    }
+</div>

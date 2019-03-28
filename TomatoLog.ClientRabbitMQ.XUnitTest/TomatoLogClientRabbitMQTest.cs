@@ -18,7 +18,7 @@ namespace TomatoLog.ClientRabbitMQ.XUnitTest
                 Logger = null,
                 LogLevel = Microsoft.Extensions.Logging.LogLevel.Information,
                 ProjectLabel = "20272",
-                ProjectName = "TomatoLog-Server",
+                ProjectName = "TomatoLog",
                 SysOptions = new EventSysOptions
                 {
                     EventId = true,
@@ -35,12 +35,12 @@ namespace TomatoLog.ClientRabbitMQ.XUnitTest
                 Version = "1.0.1",
                 Exchange = "TomatoLog-Exchange",
                 ExchangeType = "direct",
-                Host = "172.16.1.219",
+                Host = "127.0.0.1",
                 Password = "123456",
                 Port = 5672,
                 QueueName = "TomatoLog-Queue",
                 RouteKey = "All",
-                UserName = "lgx",
+                UserName = "admin",
                 vHost = "TomatoLog"
             };
             client = new TomatoLogClientRabbitMQ(options);

@@ -18,7 +18,7 @@ namespace TomatoLog.Client.XUnitTest
             EventRedisOptions options = new EventRedisOptions
             {
                 Channel = "TomatoLogChannel",
-                ConnectionString = "172.16.1.250:6379,defaultDatabase=13,password=Gworld2017,prefix=TomatoLog,abortConnect=false",
+                ConnectionString = "127.0.0.1:6379,defaultDatabase=10,password=123456,prefix=TomatoLog,abortConnect=false",
                 Logger = null,
                 LogLevel = Microsoft.Extensions.Logging.LogLevel.Information,
                 ProjectLabel = "20272",

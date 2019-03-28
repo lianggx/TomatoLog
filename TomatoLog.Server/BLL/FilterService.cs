@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Net.Http;
 using TomatoLog.Common.Utilities;
+using TomatoLog.Server.Models;
 
 namespace TomatoLog.Server.BLL
 {
@@ -12,49 +14,57 @@ namespace TomatoLog.Server.BLL
         private readonly IConfiguration configuration;
         private readonly IDistributedCache cache;
         private readonly SysConfigManager sysManager;
+        private readonly ProConfigManager proManager;
         private readonly ILogger logger;
 
-        public FilterService(IConfiguration configuration, IDistributedCache cache, SysConfigManager sysManager, ILogger logger)
+        public FilterService(IConfiguration configuration, IDistributedCache cache, SysConfigManager sysManager, ProConfigManager proManager, ILogger logger)
         {
             this.configuration = configuration;
             this.cache = cache;
             this.sysManager = sysManager;
+            this.proManager = proManager;
             this.logger = logger;
         }
 
         public async void Filter(LogMessage log)
         {
-            var reportSetting = sysManager.Report.Setting;
-            if (reportSetting.On)
+            ReportViewModel reportModel = proManager.ConfigObject?.FirstOrDefault(f => f.Setting.ProjectName == log.ProjectName);
+            var sett = reportModel?.Setting;
+            if (reportModel == null || !sett.On)
             {
-                if (reportSetting.Levels.Contains(log.LogLevel.ToString()))
+                reportModel = sysManager.ConfigObject;
+                sett = reportModel.Setting;
+            }
+
+            if (sett.Levels != null && sett.Levels.Contains(log.LogLevel.ToString()))
+            {
+                var key = $"{log.ProjectName}_{log.LogLevel}";
+                var count = await cache.GetObjectAsync<int>(key);
+                if (count >= sett.Count)
                 {
-                    var key = $"{log.ProjectName}_{log.LogLevel}";
-                    var count = await cache.GetObjectAsync<int>(key);
-                    if (count >= reportSetting.Count)
-                        Notifier(configuration, log);
-                    else
+                    Notifier(reportModel, configuration, log);
+                    await cache.RemoveAsync(key);
+                }
+                else
+                {
+                    if (count == 0)
                     {
-                        if (count == 0)
+                        var options = new DistributedCacheEntryOptions()
                         {
-                            DistributedCacheEntryOptions options = new DistributedCacheEntryOptions()
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(reportSetting.Time)
-                            };
-                            await cache.SetObjectAsync(key, ++count, options);
-                        }
-                        else
-                            await cache.SetObjectAsync(key, ++count);
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(sett.Time)
+                        };
+                        await cache.SetObjectAsync(key, ++count, options);
                     }
+                    else
+                        await cache.SetObjectAsync(key, ++count);
                 }
             }
         }
 
-        private void Notifier(IConfiguration configuration, LogMessage log)
+        private void Notifier(ReportViewModel repportModel, IConfiguration configuration, LogMessage log)
         {
             var client = HttpClientFactory.Create();
-
-            var notify = new NotifyMonitor(client, configuration, logger, sysManager.Report);
+            var notify = new NotifyMonitor(client, configuration, logger, repportModel);
             notify.SendSms(log);
             notify.SendEmail(log);
         }

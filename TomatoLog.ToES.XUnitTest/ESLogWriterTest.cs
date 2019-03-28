@@ -16,7 +16,7 @@ namespace TomatoLog.ToES.XUnitTest
         {
             StorageOptions options = new StorageOptions
             {
-                ES = "http://172.16.1.249:9200",
+                ES = "http://127.0.0.1:9200",
                 Type = TomatoLog.Common.Utilities.StorageType.ToMongoDB
             };
             var logger = new LoggerFactory().CreateLogger<ESLogWriterImpl>();

@@ -14,7 +14,7 @@ namespace TomatoLog.ToMongoDB.XUnitTest
         {
             StorageOptions options = new StorageOptions
             {
-                MongoDB = "mongodb://root:root@172.16.1.220:27017/admin",
+                MongoDB = "mongodb://root:root@127.0.0.1:27017/admin",
                 Type = TomatoLog.Common.Utilities.StorageType.ToMongoDB
             };
             var logger = new LoggerFactory().CreateLogger<MongoLogWriterImpl>();

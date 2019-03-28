@@ -75,11 +75,12 @@ namespace TomatoLog.Server.Extensions
                                                        IConfiguration configuration,
                                                        IDistributedCache cache,
                                                        SysConfigManager sysManager,
+                                                       ProConfigManager proManager,
                                                        IApplicationLifetime lifetime)
         {
             lifeTime = lifetime;
             sysConfigManager = sysManager;
-            filterService = new FilterService(configuration, cache, sysManager, logger);
+            filterService = new FilterService(configuration, cache, sysManager, proManager, logger);
             var flowType = configuration.GetSection("TomatoLog:Flow:Type").Get<FlowType>();
             switch (flowType)
             {

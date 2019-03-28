@@ -23,12 +23,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Watch Remove="BLL\BaseConfigManager.cs" />
     <Watch Remove="BLL\FilterService.cs" />
     <Watch Remove="BLL\NotifyMonitor.cs" />
+    <Watch Remove="BLL\ProConfigManager.cs" />
     <Watch Remove="BLL\SysConfigManager.cs" />
     <Watch Remove="Controllers\BaseController.cs" />
     <Watch Remove="Controllers\ConfigController.cs" />
     <Watch Remove="Controllers\LogController.cs" />
+    <Watch Remove="Controllers\ProConfigController.cs" />
+    <Watch Remove="Models\ProjectViewModel.cs" />
     <Watch Remove="Models\ReportViewModel.cs" />
     <Watch Remove="MQHelper\BindInfo.cs" />
     <Watch Remove="MQHelper\LogService.cs" />
@@ -36,6 +40,7 @@
     <Watch Remove="MQHelper\MQConnection.cs" />
     <Watch Remove="MQHelper\MQServcieManager.cs" />
     <Watch Remove="MQHelper\MQServiceBase.cs" />
+    <Watch Remove="ViewModels\ProjectConfigViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +63,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Config\ProConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="hosting.json">

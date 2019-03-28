@@ -1,0 +1,58 @@
+[
+  {
+    "Setting": {
+      "ProjectName": "TomatoLog",
+      "On": true,
+      "Time": 60,
+      "Count": 5,
+      "Levels": "Warning;Error"
+    },
+    "Sms": {
+      "On": true,
+      "Url": null,
+      "Method": "GET",
+      "Content": " At IP={IP} Message= {ErrorMessage} Project= {ProjectName}",
+      "ContentType": "application/json"
+    },
+    "Email": {
+      "On": false,
+      "Host": "smtp.qq.com",
+      "Port": 587,
+      "UserName": "xxxxxxxx@qq.com",
+      "Password": "xxxxxxxxxxxxxxxx",
+      "Receiver": null,
+      "CC": "xxxxxxxxxxx@163.com;xxxxxxxx@126.com",
+      "Title": "Test Send Mail Subject.{ErrorMessage}",
+      "Content": "At {IP} throw Exception {ErrorMessage} <h2>ProjectName:</h2><div>{ProjectName}</div>",
+      "SSL": true
+    }
+  },
+  {
+    "Setting": {
+      "ProjectName": "TomatoLog2",
+      "On": false,
+      "Time": 0,
+      "Count": 0,
+      "Levels": null
+    },
+    "Sms": {
+      "On": false,
+      "Url": null,
+      "Method": null,
+      "Content": null,
+      "ContentType": null
+    },
+    "Email": {
+      "On": false,
+      "Host": null,
+      "Port": 0,
+      "UserName": null,
+      "Password": null,
+      "Receiver": null,
+      "CC": null,
+      "Title": null,
+      "Content": null,
+      "SSL": false
+    }
+  }
+]
