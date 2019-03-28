@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.0": {},
     ".NETStandard,Version=v2.0/": {
-      "TomatoLog.ToMongoDB/1.0.0": {
+      "TomatoLog.ToMongoDB/1.0.2": {
         "dependencies": {
           "MongoDB.Driver": "2.8.0",
           "NETStandard.Library": "2.0.3",
@@ -1244,7 +1244,7 @@
     }
   },
   "libraries": {
-    "TomatoLog.ToMongoDB/1.0.0": {
+    "TomatoLog.ToMongoDB/1.0.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

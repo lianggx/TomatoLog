@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.0": {},
     ".NETStandard,Version=v2.0/": {
-      "TomatoLog.ToFile/1.0.0": {
+      "TomatoLog.ToFile/1.0.2": {
         "dependencies": {
           "NETStandard.Library": "2.0.3",
           "TomatoLog.Common": "1.0.2"
@@ -342,7 +342,7 @@
     }
   },
   "libraries": {
-    "TomatoLog.ToFile/1.0.0": {
+    "TomatoLog.ToFile/1.0.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
