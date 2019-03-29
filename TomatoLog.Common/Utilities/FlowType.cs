@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TomatoLog.Common.Utilities
+﻿namespace TomatoLog.Common.Utilities
 {
     public enum FlowType
     {

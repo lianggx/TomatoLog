@@ -1,10 +1,8 @@
-﻿using TomatoLog.Common;
-using TomatoLog.Common.Config;
-using TomatoLog.Common.Utilities;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using TomatoLog.Common.Config;
+using TomatoLog.Common.Utilities;
 
 namespace TomatoLog.Client.Redis
 {

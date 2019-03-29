@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TomatoLog.Common.Config
+﻿namespace TomatoLog.Common.Config
 {
     public class EventSysOptions
     {

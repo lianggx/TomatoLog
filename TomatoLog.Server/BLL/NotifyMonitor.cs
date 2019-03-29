@@ -1,16 +1,12 @@
-﻿using TomatoLog.Common.Utilities;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using TomatoLog.Common.Utilities;
 using TomatoLog.Server.Models;
 
 namespace TomatoLog.Server.BLL

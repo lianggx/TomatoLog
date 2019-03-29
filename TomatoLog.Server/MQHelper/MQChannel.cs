@@ -19,16 +19,10 @@ namespace TomatoLog.Server.MQHelper
 
         public IConnection Connection { get; set; }
         public EventingBasicConsumer Consumer { get; set; }
-        /// <summary>
-        ///  外部订阅消费者通知委托
-        /// </summary>
+
         public Action<MessageBody> OnReceivedCallback { get; set; }
         #endregion
 
-        /// <summary>
-        ///  向当前队列发送消息
-        /// </summary>
-        /// <param name="content"></param>
         public void Publish(string content)
         {
             byte[] body = MQConnection.UTF8.GetBytes(content);
@@ -51,7 +45,7 @@ namespace TomatoLog.Server.MQHelper
             }
             catch (Exception ex)
             {
-                msgBody.ErrorMessage = $"订阅-出错{ex.Message}";
+                msgBody.ErrorMessage = $"Subscribe-Exception | {ex.Message}";
                 msgBody.Exception = ex;
                 msgBody.Error = true;
                 msgBody.Code = 500;
@@ -59,21 +53,12 @@ namespace TomatoLog.Server.MQHelper
             OnReceivedCallback?.Invoke(msgBody);
         }
 
-        /// <summary>
-        ///  设置消息处理完成标志
-        /// </summary>
-        /// <param name="consumer"></param>
-        /// <param name="deliveryTag"></param>
-        /// <param name="multiple"></param>
         public void SetBasicAck(EventingBasicConsumer consumer, ulong deliveryTag, bool multiple)
         {
             consumer.Model.BasicAck(deliveryTag, multiple);
-           
+
         }
 
-        /// <summary>
-        ///  关闭消息队列的连接
-        /// </summary>
         public void Stop()
         {
             if (this.Connection != null && this.Connection.IsOpen)

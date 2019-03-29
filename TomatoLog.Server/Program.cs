@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
@@ -36,12 +35,6 @@ namespace TomatoLog.Server
             Console.WriteLine(e.Exception);
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
         public static IWebHostBuilder BuildWebHost(string[] args)
         {
             var builder = new ConfigurationBuilder().AddJsonFile("hosting.json").Build();

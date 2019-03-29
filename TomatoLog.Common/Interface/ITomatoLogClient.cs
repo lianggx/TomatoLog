@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using TomatoLog.Common.Config;
-using Microsoft.Extensions.Logging;
 
 namespace TomatoLog.Common.Interface
 {

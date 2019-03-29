@@ -1,14 +1,8 @@
-﻿using TomatoLog.Common.Interface;
-using TomatoLog.Common.Utilities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using TomatoLog.Common.Interface;
 
 namespace TomatoLog.Server.Controllers
 {

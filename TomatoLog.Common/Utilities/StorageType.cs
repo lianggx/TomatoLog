@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TomatoLog.Common.Utilities
+﻿namespace TomatoLog.Common.Utilities
 {
     public enum StorageType
     {

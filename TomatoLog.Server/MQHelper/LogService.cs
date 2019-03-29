@@ -26,10 +26,6 @@ namespace TomatoLog.Server.MQHelper
             });
         }
 
-        /// <summary>
-        ///  消息
-        /// </summary>
-        /// <param name="message"></param>
         public void SmsLog_OnReceived(MessageBody message)
         {
             if (message.Error)

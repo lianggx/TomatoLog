@@ -1,11 +1,9 @@
-﻿using TomatoLog.Common.Config;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TomatoLog.Common.Config;
 using TomatoLog.Common.Interface;
 using TomatoLog.Common.Utilities;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TomatoLog.Common.Repository
 {

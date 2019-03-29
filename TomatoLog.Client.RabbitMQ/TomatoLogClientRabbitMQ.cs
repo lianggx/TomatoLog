@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using TomatoLog.Client.RabbitMQ.MQHelper;
 using System;
 using System.Threading.Tasks;
+using TomatoLog.Client.RabbitMQ.MQHelper;
 using TomatoLog.Common.Config;
 using TomatoLog.Common.Utilities;
 

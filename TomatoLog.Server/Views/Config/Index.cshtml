@@ -15,25 +15,25 @@
 
 <div class="container">
     <div id="saveTips" class="alert alert-success hidden text-center">
-        <strong>保存成功！</strong>
+        <strong>Success！</strong>
     </div>
-    <h2>TomatoLog警报配置</h2>
+    <h2>Report Config</h2>
     <h2 id="tipsMessage" class="p-3 mb-2 bg-success text-white" data-placement="top"></h2>
     <div class="panel panel-info">
         <form class="form-group" action="/Config/Setting" method="post">
             <div class="panel-heading bg-info">
                 <nav class="navbar navbar-light bg-light">
                     <div class="navbar-brand">
-                        <label>基础配置</label>
-                        <input type="submit" value="保存" class="btn btn-primary" />
+                        <label>Foundation</label>
+                        <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
                 </nav>
             </div>
             <div class="panel-body">
-                是否启用 <input class="form-control" type="text" id="On" name="On" value="@sett.On.ToString().ToLower()" />
-                警报周期（秒）<input class="form-control" type="text" id="Time" name="Time" value="@sett.Time" />
-                触发阀值<input class="form-control" type="text" id="Count" name="Count" value="@sett.Count" />
-                监控级别(支持 Trace;Debug;Information;Warning;Error;Critical;None，监控多个级别以分号进行分隔)
+                Enable <input class="form-control" type="text" id="On" name="On" value="@sett.On.ToString().ToLower()" />
+                Report stage（Seconds）<input class="form-control" type="text" id="Time" name="Time" value="@sett.Time" />
+                Trigger threshold<input class="form-control" type="text" id="Count" name="Count" value="@sett.Count" />
+                Monitor Levels(Support Trace;Debug;Information;Warning;Error;Critical;None，Multiple levels are split with ";")
                 <input class="form-control" type="text" id="Levels" name="Levels" value="@sett.Levels" />
             </div>
         </form>
@@ -43,17 +43,17 @@
             <div class="panel-heading bg-danger">
                 <nav class="navbar navbar-light bg-light">
                     <div class="navbar-brand">
-                        <label>短信配置</label>
-                        <input type="submit" value="保存" class="btn btn-primary" />
+                        <label>SMS Config</label>
+                        <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
                 </nav>
             </div>
             <div class="panel-body">
-                是否启用<input class="form-control" type="text" id="On" name="On" value="@sms.On.ToString().ToLower()" />
+                Enable<input class="form-control" type="text" id="On" name="On" value="@sms.On.ToString().ToLower()" />
                 Url<input class="form-control" type="text" id="Url" name="Url" value="@sms.Url" />
                 HttpMethoed<input class="form-control" type="text" id="Method" name="Method" value="@sms.Method" />
                 Content-Type<input class="form-control" type="text" id="ContentType" name="ContentType" value="@sms.ContentType" />
-                短信内容(支持内置变量,<a href="#SysVariable">查看变量</a>)
+                Content(Support System Variables,<a href="#SysVariable">System Variables</a>)
                 <textarea class="form-control" id="Content" name="Content">@sms.Content</textarea>
             </div>
         </form>
@@ -63,53 +63,29 @@
             <div class="panel-heading bg-success">
                 <nav class="navbar navbar-light bg-light">
                     <div class="navbar-brand">
-                        <label>邮件配置</label>
-                        <input type="submit" value="保存" class="btn btn-primary" />
+                        <label>Email Config</label>
+                        <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
                 </nav>
             </div>
             <div class="panel-body">
-                是否启用<input class="form-control" type="text" id="On" name="On" value="@email.On.ToString().ToLower()" />
-                账号<input class="form-control" type="text" id="UserName" name="UserName" value="@email.UserName" />
-                密码<input class="form-control" type="text" id="Password" name="Password" value="@email.Password" />
-                主机<input class="form-control" type="text" id="Host" name="Host" value="@email.Host" />
-                端口<input class="form-control" type="text" id="Port" name="Port" value="@email.Port" />
-                收件人<input class="form-control" type="text" id="Receiver" name="Receiver" value="@email.Receiver" />
-                抄送<input class="form-control" type="text" id="CC" name="CC" value="@email.CC" />
-                主题(支持内置变量,<a href="#SysVariable">查看变量</a>)
+                Enable<input class="form-control" type="text" id="On" name="On" value="@email.On.ToString().ToLower()" />
+                Mailbox<input class="form-control" type="text" id="UserName" name="UserName" value="@email.UserName" />
+                Password<input class="form-control" type="text" id="Password" name="Password" value="@email.Password" />
+                Host<input class="form-control" type="text" id="Host" name="Host" value="@email.Host" />
+                Port<input class="form-control" type="text" id="Port" name="Port" value="@email.Port" />
+                Receiver<input class="form-control" type="text" id="Receiver" name="Receiver" value="@email.Receiver" />
+                CC<input class="form-control" type="text" id="CC" name="CC" value="@email.CC" />
+                Subject(Support System Variables,<a href="#SysVariable">System Variables</a>)
                 <input class="form-control" type="text" id="Title" name="Title" value="@email.Title" />
-                内容(支持内置变量,<a href="#SysVariable">查看变量</a>)
+                Contnet(Support System Variables,<a href="#SysVariable">System Variables</a>)
                 <textarea class="form-control" id="Content" name="Content">@email.Content</textarea>
                 SSL<input class="form-control" type="tel" id="SSL" name="SSL" value="@email.SSL.ToString().ToLower()" />
             </div>
         </form>
     </div>
 
-    <div class="panel panel-warning">
-        <a name="SysVariable"></a>
-        <div class="panel-heading bg-warning">
-            <label>系统内置变量（区分大小写）</label>
-        </div>
-        <div class="panel-body">
-            <ul class="list-group">
-                <li class="list-group-item">时间戳：{Timestamp}</li>
-                <li class="list-group-item">源IP：{IP}</li>
-                <li class="list-group-item">源IP列表：{IPList}</li>
-                <li class="list-group-item">主题：{ErrorMessage}</li>
-                <li class="list-group-item">堆栈：{StackTrace}</li>
-                <li class="list-group-item">日志级别：{LogLevel}</li>
-                <li class="list-group-item">主机名称：{MachineName}</li>
-                <li class="list-group-item">进程ID：{ProcessId}</li>
-                <li class="list-group-item">进程名称：{ProcessName}</li>
-                <li class="list-group-item">项目标签：{ProjectLabel}</li>
-                <li class="list-group-item">项目名称：{ProjectName}</li>
-                <li class="list-group-item">线程ID：{ThreadId}</li>
-                <li class="list-group-item">主机用户名：{UserName}</li>
-                <li class="list-group-item">版本号：{Version}</li>
-                <li class="list-group-item">扩展信息：{Extra}</li>
-            </ul>
-        </div>
-    </div>
+    @Html.Partial("SysVariables")
 
     @section Scripts{
         @if (show)

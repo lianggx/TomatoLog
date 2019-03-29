@@ -1,9 +1,7 @@
-﻿using TomatoLog.Common.Utilities;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+using TomatoLog.Common.Utilities;
 
 namespace TomatoLog.Common.Config
 {
@@ -17,7 +15,7 @@ namespace TomatoLog.Common.Config
             {
                 Check.NotNull(value, "projectName");
                 if (value.IndexOf('.') > 0 || value.IndexOf(' ') > 0)
-                    throw new ArgumentOutOfRangeException("项目名称不允许试用符号 . 或者空格");
+                    throw new ArgumentOutOfRangeException("The project name doesn't contains \".\"  or space");
                 projectName = value;
             }
         }

@@ -2,22 +2,9 @@
     ViewData["Title"] = "Home Page";
     List<string> projs = ViewBag.Projects;
 }
-<h2>日志管理</h2>
-<div class="form-group">
-    <form>
-        <div class="form-row">
-            <div class="form-group col-md-8">
-                <input type="text" class="form-control" id="keyword" placeholder="输入查询条件，支持ES语法" />
-            </div>
-            <div class="form-group col-md-1">
-                <button type="submit" class="form-control btn btn-primary mb-2">搜索</button>
-            </div>
-        </div>
-    </form>
-</div>
+<h2>TomatoLog</h2>
 <div class="row">
     <div class="col-md-9">
-        <h2>番茄日志</h2>
         <ul>
             @foreach (var p in projs)
             {
@@ -35,7 +22,7 @@
 
             $(data).each(function (num, res) {
                 var r = JSON.parse(res);
-                $(labels).append("<li class=\"list-group-item\"><a href=\"/Home/Detail?proj=" + proj + "&label=" + r.FileName + "\">" + r.FileName + "</a></li>");
+                $(labels).append("<li class=\"list-group-item\"><a href=\"/Home/Detail?Project=" + proj + "&Label=" + r.FileName + "\">" + r.FileName + "</a></li>");
             });
 
             $(obj).append(labels);

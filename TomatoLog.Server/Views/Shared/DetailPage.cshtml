@@ -1,0 +1,17 @@
+﻿@model MessageViewModel
+@{
+    int count = Convert.ToInt32(ViewData["Count"]);
+    var url = $"/Home/Detail?Project={Model.Project}&Label={Model.Label}&Keyword={Model.Keyword}&PageSize={Model.PageSize}";
+    string nextUrl = null;
+    string prevUrl = null;
+    if (count == 100) { nextUrl = url + $"&Page={Model.Page + 1}"; }
+    if (Model.Page > 1) { prevUrl = url + $"&Page={Model.Page - 1}"; }
+}
+<ul class="pagination">
+    @if (prevUrl != null)
+    {
+        <li><a href="@prevUrl" title="Previous Page">Previous</a></li>}
+    @if (nextUrl != null)
+    {
+        <li><a href="@nextUrl" title="Next Page">Next</a></li>}
+</ul>

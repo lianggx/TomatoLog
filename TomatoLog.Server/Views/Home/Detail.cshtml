@@ -1,28 +1,28 @@
 ﻿@model List<string>
 @{
     ViewData["Title"] = "Detail Page";
-    string proj = ViewBag.Proj;
-    string label = ViewBag.Label;
-    string keyword = ViewBag.Keyword;
-
-    var fileName = System.IO.Path.Combine(proj, label);
+    ViewData["Count"] = Model.Count;
+    MessageViewModel msgView = ViewBag.Message;
+    var fileName = System.IO.Path.Combine(msgView.Project, msgView.Label);
 }
-<h2>@fileName</h2>
-<a id="btnField" href="###" data-toggle="modal" data-target="#fieldSetting">选择列</a>
-<div class="form-group">
-    <form>
-        <input type="text" value="@proj" name="proj" id="proj" hidden="hidden" />
-        <input type="text" value="@label" name="label" id="label" hidden="hidden" />
-        <div class="form-row">
-            <div class="form-group col-md-8">
-                <input type="text" value="@keyword" class="form-control" name="keyword" id="keyword" placeholder="输入查询条件，支持MongoDB/ES语法" />
-            </div>
-            <div class="form-group col-md-1">
-                <button type="submit" class="form-control btn btn-primary mb-2">搜索</button>
-            </div>
-        </div>
-    </form>
-</div>
+
+<form class="form-group">
+    <input type="text" value="@msgView.Project" name="Project" id="Project" hidden="hidden" />
+    <input type="text" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
+    <div class="row col-sm-2">
+        <a id="btnField" href="###" data-toggle="modal" data-target="#fieldSetting">Show Fields</a> |
+        <strong>@fileName</strong>
+    </div>
+    <div class="row col-sm-7">
+        <input type="text" value="@msgView.Keyword" class="form-control" name="keyword" id="keyword" placeholder="Support MongoDB/ES syntax" />
+    </div>
+    <div class="row col-sm-2">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+    <div class="row col-sm-2">
+        @Html.Partial("DetailPage", msgView, ViewData)
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -67,12 +67,12 @@
         }
     </tbody>
 </table>
-
+@Html.Partial("DetailPage", msgView, ViewData)
 <div class="modal fade" id="showDetail" tabindex="-1" role="dialog" aria-labelledby="showDetail" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="showDetail">详细信息</h5>
+                <h5 class="modal-title" id="showDetail">Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -88,7 +88,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="fieldSetting">选择显示的列</h5>
+                <h5 class="modal-title" id="fieldSetting">Show Fields</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -113,9 +113,11 @@
                         <option value="Version">Version</option>
                     </select>
                     <input type="hidden" value="@string.Join(',',ViewBag.FIELDS)" id="txtFields" />
-                    <input type="hidden" value="@proj" name="proj" id="proj" hidden="hidden" />
-                    <input type="hidden" value="@label" name="label" id="label" hidden="hidden" />
-                    <input type="hidden" value="@keyword" name="keyword" id="keyword" />
+                    <input type="hidden" value="@msgView.Project" name="Project" id="Project" hidden="hidden" />
+                    <input type="hidden" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
+                    <input type="hidden" value="@msgView.Keyword" name="Keyword" id="Keyword" />
+                    <input type="hidden" value="@msgView.Page" name="Page" id="Page" />
+                    <input type="hidden" value="@msgView.PageSize" name="PageSize" id="PageSize" />
                 </div>
                 <div class="modal-footer">
                     <input type="submit" value="保存" id="btnSave" />
@@ -134,12 +136,12 @@
             $(fs).each(function (d, f) {
                 $("#fields option[value='" + f + "']").attr("selected", "selected");
                 $("table tr th[name='" + f + "']").removeClass("hidden");
-                $("table tr td[name='" + f +"']").removeClass("hidden");
+                $("table tr td[name='" + f + "']").removeClass("hidden");
             });
             console.log($("#fields option").val());
             var fields = $('#fields').bootstrapDualListbox({
-                nonSelectedListLabel: '未选择',
-                selectedListLabel: '已选择',
+                nonSelectedListLabel: 'Non-selected',
+                selectedListLabel: 'Selected',
                 preserveSelectionOnMove: 'moved',
                 showFilterInputs: false,
                 moveOnSelect: false,

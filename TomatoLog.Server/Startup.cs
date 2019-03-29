@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TomatoLog.Server.Extensions;
-using NLog.Extensions.Logging;
-using NLog.Web;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using NLog.Extensions.Logging;
+using System.Net.Http;
 using TomatoLog.Server.BLL;
+using TomatoLog.Server.Extensions;
 
 namespace TomatoLog.Server
 {

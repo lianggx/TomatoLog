@@ -18,7 +18,7 @@ namespace TomatoLog.Client.Extensions
         /// 
         /// </summary>
         /// <param name="exception"></param>
-        /// <param name="eventId">0表示没有ID</param>
+        /// <param name="eventId">0=Not specified</param>
         /// <returns></returns>
         public static async Task AddTomatoLogAsync(this Exception exception, int eventId = 0)
         {

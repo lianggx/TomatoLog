@@ -37,15 +37,12 @@ namespace TomatoLog.Server.Extensions
             try
             {
                 var storageType = $"TomatoLog.{storage.Type}";
-                //var plugin = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins", storageType, storageType + ".dll");
-                //var assembly = Assembly.LoadFrom(plugin);
                 var plugin = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins", storageType);
                 var dlls = Directory.GetFiles(plugin, "*.dll");
                 Assembly assembly = null;
                 foreach (var d in dlls)
                 {
                     FileInfo fi = new FileInfo(d);
-                    //  AppDomain.CurrentDomain.AssemblyResolve += (sender, args)=>{};
                     var aby = AssemblyLoadContext.Default.LoadFromAssemblyPath(fi.FullName);
                     var fileName = fi.Name.Substring(0, fi.Name.LastIndexOf('.'));
                     if (fileName == storageType)
@@ -61,7 +58,7 @@ namespace TomatoLog.Server.Extensions
                 }
 
                 if (logWriter == null)
-                    throw new ArgumentOutOfRangeException("必须指定  Storage Type");
+                    throw new ArgumentOutOfRangeException("The Storage:Type required!");
                 service.AddSingleton<ILogWriter>(logWriter);
             }
             catch (Exception ex)

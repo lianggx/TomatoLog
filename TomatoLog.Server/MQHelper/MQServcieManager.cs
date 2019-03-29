@@ -28,10 +28,6 @@ namespace TomatoLog.Server.MQHelper
             timer = new Timer(OnInterval, "", timer_tick, timer_tick);
         }
 
-        /// <summary>
-        ///  自检
-        /// </summary>
-        /// <param name="sender"></param>
         private void OnInterval(object sender)
         {
             int count = 0;

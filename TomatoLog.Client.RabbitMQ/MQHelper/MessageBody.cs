@@ -1,8 +1,5 @@
 ﻿using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TomatoLog.Client.RabbitMQ.MQHelper
 {
@@ -11,7 +8,7 @@ namespace TomatoLog.Client.RabbitMQ.MQHelper
         public EventingBasicConsumer Consumer { get; set; }
         public BasicDeliverEventArgs BasicDeliver { get; set; }
         /// <summary>
-        ///  0成功
+        ///  0=Success
         /// </summary>
         public int Code { get; set; }
         public string Content { get; set; }

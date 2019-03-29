@@ -1,10 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TomatoLog.Common.Config
+﻿namespace TomatoLog.Common.Config
 {
     public class EventRedisOptions : EventOptions
     {

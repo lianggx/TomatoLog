@@ -46,16 +46,16 @@ namespace TomatoLog.Client.XUnitTest
         {
             for (int i = 0; i < 10; i++)
             {
-                //await client.WriteLogAsync(LogLevel.Debug, "ES Exception 第一次测试消息", null, null);
-                //await client.WriteLogAsync(LogLevel.Information, "ES Exception 第一次测试消息", null, null);
-                //await client.WriteLogAsync(LogLevel.Critical, "ES Exception 第一次测试消息", null, null);
-                //await client.WriteLogAsync(LogLevel.None, "ES Exception 第一次测试消息", null, null);
-                //await client.WriteLogAsync(LogLevel.Trace, "ES Exception 第一次测试消息", null, null);
-                //await client.WriteLogAsync(LogLevel.Warning, "ES Exception 第一次测试消息", null, null);
-                // await client.WriteLogAsync(LogLevel.Error, "ES Exception 第一次测试消息", null, null);
+                //await client.WriteLogAsync(LogLevel.Debug, "ES Exception", null, null);
+                //await client.WriteLogAsync(LogLevel.Information, "ES Exception", null, null);
+                //await client.WriteLogAsync(LogLevel.Critical, "ES Exception", null, null);
+                //await client.WriteLogAsync(LogLevel.None, "ES Exception", null, null);
+                //await client.WriteLogAsync(LogLevel.Trace, "ES Exception", null, null);
+                //await client.WriteLogAsync(LogLevel.Warning, "ES Exception", null, null);
+                // await client.WriteLogAsync(LogLevel.Error, "ES Exception", null, null);
                 try
                 {
-                    throw new Exception("Redis主动异常");
+                    throw new Exception("RabbitMQ throw exception");
                 }
                 catch (Exception ex)
                 {

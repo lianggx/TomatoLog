@@ -31,7 +31,7 @@ namespace TomatoLog.ToES.XUnitTest
             JToken query = new JObject();
             query["multi_match"] = new JObject()
             {
-                { "query","Ö÷¶¯Òì³£" }
+                { "query","Throw exception" }
             };
             var jar = new JArray();
             jar.Add("errormessage");

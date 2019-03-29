@@ -1,11 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using RabbitMQ.Client;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TomatoLog.Server.MQHelper
 {
@@ -45,14 +40,11 @@ namespace TomatoLog.Server.MQHelper
         }
 
 
-        /// <summary>
-        ///  启动订阅
-        /// </summary>
         public void Start()
         {
             if (started)
             {
-                Console.WriteLine("服务已经启动！");
+                Console.WriteLine("The Service Started！");
                 return;
             }
             foreach (var item in this.Binds)
@@ -64,16 +56,13 @@ namespace TomatoLog.Server.MQHelper
             started = true;
         }
 
-        /// <summary>
-        ///  停止订阅
-        /// </summary>
         public void Stop()
         {
             foreach (var c in this.List)
             {
-                logger.LogDebug("正在关闭消息通道,{0},{1},{2}", c.ExchangeName, c.QueueName, c.RoutekeyName);
+                logger.LogDebug("Closeing channle,{0},{1},{2}", c.ExchangeName, c.QueueName, c.RoutekeyName);
                 c.Stop();
-                logger.LogDebug("已关闭消息通道,{0},{1},{2}", c.ExchangeName, c.QueueName, c.RoutekeyName);
+                logger.LogDebug("The channel was closed,{0},{1},{2}", c.ExchangeName, c.QueueName, c.RoutekeyName);
             }
             this.List.Clear();
             started = false;
