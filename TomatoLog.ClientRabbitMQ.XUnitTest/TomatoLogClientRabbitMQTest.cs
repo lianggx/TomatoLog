@@ -35,12 +35,12 @@ namespace TomatoLog.ClientRabbitMQ.XUnitTest
                 Version = "1.0.1",
                 Exchange = "TomatoLog-Exchange",
                 ExchangeType = "direct",
-                Host = "127.0.0.1",
+                Host = "172.16.1.219",
                 Password = "123456",
                 Port = 5672,
                 QueueName = "TomatoLog-Queue",
                 RouteKey = "All",
-                UserName = "admin",
+                UserName = "lgx",
                 vHost = "TomatoLog"
             };
             client = new TomatoLogClientRabbitMQ(options);

@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using MongoDB.Bson.Serialization;
 
 namespace TomatoLog.ToMongoDB
 {
@@ -18,6 +19,8 @@ namespace TomatoLog.ToMongoDB
         public MongoLogWriterImpl(StorageOptions options, ILogger log) : base(options, log)
         {
             client = new MongoClient(options.MongoDB);
+            var serializer = new MongoDB.Bson.Serialization.Serializers.DateTimeSerializer(DateTimeKind.Local);
+            BsonSerializer.RegisterSerializer(typeof(DateTime), serializer);
         }
 
         public override async Task<List<string>> GetLabels(string proj)
