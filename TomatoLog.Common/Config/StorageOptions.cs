@@ -8,5 +8,6 @@ namespace TomatoLog.Common.Config
         public string File { get; set; }
         public string ES { get; set; }
         public string MongoDB { get; set; }
+        public string Others { get; set; }
     }
 }

@@ -37,6 +37,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.Client.RabbitMQ",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.ClientRabbitMQ.XUnitTest", "TomatoLog.ClientRabbitMQ.XUnitTest\TomatoLog.ClientRabbitMQ.XUnitTest.csproj", "{D12D53BF-9026-4BEF-9B59-0185E8B6A78B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{D309F82B-8776-4BDB-A2F0-D6D20E6C67A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "Examples\Example\Example.csproj", "{BD056302-2476-4F18-9263-C77FD0870CCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +103,10 @@ Global
 		{D12D53BF-9026-4BEF-9B59-0185E8B6A78B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D12D53BF-9026-4BEF-9B59-0185E8B6A78B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D12D53BF-9026-4BEF-9B59-0185E8B6A78B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD056302-2476-4F18-9263-C77FD0870CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD056302-2476-4F18-9263-C77FD0870CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD056302-2476-4F18-9263-C77FD0870CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD056302-2476-4F18-9263-C77FD0870CCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +127,7 @@ Global
 		{9F71CFDB-F855-4A71-9369-D1A3A8371CC2} = {11364889-3666-4E2F-BCDD-583FDBEA8DC8}
 		{98A7B2EC-55C4-4971-8BD9-C525D7F1A8AE} = {299FA2FB-6403-4AF5-ABC8-04E7F9EBA4DB}
 		{D12D53BF-9026-4BEF-9B59-0185E8B6A78B} = {11364889-3666-4E2F-BCDD-583FDBEA8DC8}
+		{BD056302-2476-4F18-9263-C77FD0870CCC} = {D309F82B-8776-4BDB-A2F0-D6D20E6C67A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D09D4E2-2C4A-4568-A894-61269497475C}
