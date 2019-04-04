@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/lianggx/TomatoLog/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>1.0.2</Version>
+    <Authors>lianggx</Authors>
+    <Product>TomatoLog</Product>
+    <PackageProjectUrl>https://github.com/lianggx/TomatoLog</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lianggx/TomatoLog.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NEST" Version="6.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TomatoLog.Common\TomatoLog.Common.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="SET targetFolder=$(SolutionDir)TomatoLog.Server\Plugins\$(ProjectName)\&#xD;&#xA;md %targetFolder%&#xD;&#xA;copy $(OutDir)*.* %targetFolder%" />
+  </Target>
+
+</Project>

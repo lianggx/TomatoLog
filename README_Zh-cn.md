@@ -23,6 +23,81 @@ Install-Package TomatoLog.Client.Redis
 Install-Package TomatoLog.Client.RabbitMQ
 ```
 
+### 配置客户端
+
+```
+        public void ConfigureServices(IServiceCollection services)
+        {
+			EventRabbitMQOptions options = new EventRabbitMQOptions
+            {
+                Logger = null,
+                LogLevel = Microsoft.Extensions.Logging.LogLevel.Information,
+                ProjectLabel = "20272",
+                ProjectName = "TomatoLog",
+                SysOptions = new EventSysOptions
+                {
+                    EventId = true,
+                    IP = true,
+                    IPList = true,
+                    MachineName = true,
+                    ProcessId = true,
+                    ProcessName = true,
+                    ThreadId = true,
+                    Timestamp = true,
+                    UserName = true
+                },
+                Tags = null,
+                Version = "1.0.1",
+                Exchange = "TomatoLog-Exchange",
+                ExchangeType = "direct",
+                Host = "127.0.0.1",
+                Password = "guest",
+                Port = 5672,
+                QueueName = "TomatoLog-Queue",
+                RouteKey = "All",
+                UserName = "guest",
+                vHost = "TomatoLog"
+            };
+
+			services.AddSingleton<ITomatoLogClient, TomatoLogClientRabbitMQ>(factory =>
+            {
+                var client = new TomatoLogClientRabbitMQ(options);
+                return client;
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+```
+
+### 使用 TomatoLogClient 
+
+```
+    public class HomeController : ControllerBase
+    {
+        private ITomatoLogClient logClient;
+        public HomeController(ITomatoLogClient logClient)
+        {
+            this.logClient = logClient;
+        }
+
+        // GET api/values
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<string>>> Get()
+        {
+            try
+            {
+                await logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
+                throw new NotSupportedException("NotSupported Media Type");
+            }
+            catch (Exception ex)
+            {
+                await ex.AddTomatoLogAsync();
+            }
+            return new string[] { "value1", "value2" };
+        }
+	}
+```
+
 ### 部署服务端
 
 首先，下载服务端压缩包文件 ![TomatoLog](https://github.com/lianggx/TomatoLog/releases/download/1.0.0/TomatoLog.zip) ，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
