@@ -41,7 +41,7 @@ namespace TomatoLog.Server.MQHelper
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message + "|" + message.Content, ex);
+                logger.LogError(ex, ex.Message + "|" + message.Content);
             }
             message.Consumer.Model.BasicAck(message.BasicDeliver.DeliveryTag, true);
 

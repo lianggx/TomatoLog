@@ -31,27 +31,19 @@ namespace TomatoLog.Server.Controllers
             return View();
         }
 
-        //public async Task<IActionResult> Detail([FromQuery]string proj, [FromQuery]string label, [FromQuery]string keyword, int page = 1, int pageSize = 100)
         public async Task<IActionResult> Detail([FromQuery]MessageViewModel model)
         {
             ViewBag.Message = model;
             ViewBag.FIELDS = FIELDS;
-
-            //ViewBag.Proj = model.Project;
-            //ViewBag.Label = model.Label;
-            //ViewBag.FIELDS = FIELDS;
-            //ViewBag.Keyword = model.Keyword;
             var result = await logWriter.List(model.Project, model.Label, model.Keyword, model.Page, model.PageSize);
             return View(result);
         }
 
 
         [HttpPost]
-        // public IActionResult Detail([FromForm]string[] fields, [FromForm]string proj, [FromForm]string label, [FromForm]string keyword, int page = 1, int pageSize = 100)
         public IActionResult Detail([FromForm]string[] fields, [FromForm]MessageViewModel model)
         {
             FIELDS = fields;
-            //return RedirectToAction("Detail", new { proj, label, keyword, page, pageSize });
             return RedirectToAction("Detail", model);
         }
 
