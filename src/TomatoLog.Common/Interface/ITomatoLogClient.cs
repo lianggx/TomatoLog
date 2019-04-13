@@ -8,6 +8,8 @@ namespace TomatoLog.Common.Interface
     {
         Task WriteLogAsync(int eventId, LogLevel logLevel, string message, string content = null, object extra = null);
 
+        void WriteLog(int eventId, LogLevel logLevel, string message, string content = null, object extra = null);
+
         EventOptions Options { get; set; }
     }
 }

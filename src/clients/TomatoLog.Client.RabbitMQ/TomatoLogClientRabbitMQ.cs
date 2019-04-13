@@ -44,5 +44,11 @@ namespace TomatoLog.Client.RabbitMQ
                     throw ex;
             }
         }
+
+        public override void WriteLog(int eventId, LogLevel logLevel, string message, string content = null, object extra = null)
+        {
+            var task = WriteLogAsync(eventId, logLevel, message, content, extra).ConfigureAwait(false).GetAwaiter();
+            task.GetResult();
+        }
     }
 }

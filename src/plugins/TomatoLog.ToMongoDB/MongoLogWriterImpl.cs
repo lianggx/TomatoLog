@@ -19,7 +19,7 @@ namespace TomatoLog.ToMongoDB
         public MongoLogWriterImpl(StorageOptions options, ILogger log) : base(options, log)
         {
             client = new MongoClient(options.MongoDB);
-            var serializer = new MongoDB.Bson.Serialization.Serializers.DateTimeSerializer(DateTimeKind.Local);
+            var serializer = new MongoDB.Bson.Serialization.Serializers.DateTimeSerializer(DateTimeKind.Local, BsonType.DateTime);
             BsonSerializer.RegisterSerializer(typeof(DateTime), serializer);
         }
 

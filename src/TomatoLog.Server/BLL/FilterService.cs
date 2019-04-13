@@ -40,7 +40,7 @@ namespace TomatoLog.Server.BLL
             {
                 var key = $"{log.ProjectName}_{log.LogLevel}";
                 var count = await cache.GetObjectAsync<int>(key);
-                if (count >= sett.Count)
+                if ((count + 1) >= sett.Count)
                 {
                     Notifier(reportModel, configuration, log);
                     await cache.RemoveAsync(key);

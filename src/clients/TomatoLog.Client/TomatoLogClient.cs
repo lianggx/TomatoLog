@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using TomatoLog.Common.Config;
@@ -28,6 +31,11 @@ namespace TomatoLog.Client
 
         public virtual Task WriteLogAsync(int eventId, LogLevel logLevel, string message, string content = null, object extra = null)
         {
+            throw new NotImplementedException("WriteLogAsync");
+        }
+
+        public virtual void WriteLog(int eventId, LogLevel logLevel, string message, string content = null, object extra = null)
+        {
             throw new NotImplementedException("WriteLog");
         }
 
@@ -51,11 +59,10 @@ namespace TomatoLog.Client
 
             if (sysOpt.IP)
             {
-                var ips = await Dns.GetHostAddressesAsync(hostName);
-                var iplist = ips.Where(f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).OrderByDescending(f => f.AddressFamily).ToList();
-                log["IP"] = iplist[0]?.ToString();
+                var ips = GetHostAddress();
+                log["IP"] = ips.FirstOrDefault();
                 if (sysOpt.IPList)
-                    log["IPList"] = JToken.FromObject(iplist.Select(a => a.ToString()));
+                    log["IPList"] = JToken.FromObject(ips);
             }
             if (sysOpt.MachineName)
                 log["MachineName"] = hostName;
@@ -66,7 +73,7 @@ namespace TomatoLog.Client
             if (sysOpt.ProcessName)
                 log["ProcessName"] = process.ProcessName;
             if (sysOpt.Timestamp)
-                log["Timestamp"] = DateTime.Now.ToString();
+                log["Timestamp"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ms");
             if (sysOpt.UserName)
                 log["UserName"] = Environment.UserName;
             if (sysOpt.ErrorMessage)
@@ -78,6 +85,27 @@ namespace TomatoLog.Client
                 log["Extra"] = JToken.FromObject(extra);
 
             return log.ToString();
+        }
+
+        private List<string> GetHostAddress()
+        {
+            List<string> result = new List<string>();
+            var ipList = NetworkInterface.GetAllNetworkInterfaces()
+                                         .Where(f => f.NetworkInterfaceType != NetworkInterfaceType.Loopback && f.OperationalStatus == OperationalStatus.Up)
+                                         .OrderByDescending(f => f.Speed);
+
+            foreach (var item in ipList)
+            {
+                var props = item.GetIPProperties();
+                var ipv4 = props.UnicastAddresses
+                                .Where(f => f.Address.AddressFamily == AddressFamily.InterNetwork)
+                                .Select(f => f.Address)
+                                .FirstOrDefault();
+
+                if (ipv4 == null) continue;
+                result.Add(ipv4.ToString());
+            }
+            return result;
         }
     }
 }

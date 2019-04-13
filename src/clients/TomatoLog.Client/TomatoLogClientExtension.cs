@@ -27,6 +27,18 @@ namespace TomatoLog.Client.Extensions
             await TomatoLogClient.Instance.WriteLogAsync(eventId, LogLevel.Error, exception.Message, stackTrace, null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="eventId">0=Not specified</param>
+        /// <returns></returns>
+        public static void AddTomatoLog(this Exception exception, int eventId = 0)
+        {
+            var task = exception.AddTomatoLogAsync(eventId).ConfigureAwait(false).GetAwaiter();
+            task.GetResult();
+        }
+
         private static string GetStackTrace(StringBuilder sb, Exception ex)
         {
             sb.AppendFormat("{0}#####{1}", ex.Message, ex.StackTrace);

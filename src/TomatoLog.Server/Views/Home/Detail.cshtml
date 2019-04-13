@@ -1,9 +1,9 @@
 ﻿@model List<string>
 @{
-    ViewData["Title"] = "Detail Page";
-    ViewData["Count"] = Model.Count;
     MessageViewModel msgView = ViewBag.Message;
     var fileName = System.IO.Path.Combine(msgView.Project, msgView.Label);
+    ViewData["Title"] = msgView.Project;
+    ViewData["Count"] = Model.Count;
 }
 
 <form class="form-group">
@@ -49,7 +49,7 @@
             var msg = JsonConvert.DeserializeObject<LogMessage>(log);
             <tr data-toggle="modal" data-target="#showDetail" data-whatever="@log">
                 <td name="EventId" class="hidden">@msg.EventId</td>
-                <td name="Timestamp" class="hidden">@msg.Timestamp</td>
+                <td name="Timestamp" class="hidden">@msg.Timestamp.ToString("yyyy/MM/dd HH:mm:ss.ms")</td>
                 <td name="ProcessId" class="hidden">@msg.ProcessId</td>
                 <td name="ProcessName" class="hidden">@msg.ProcessName</td>
                 <td name="ProjectName" class="hidden">@msg.ProjectName</td>
@@ -120,7 +120,7 @@
                     <input type="hidden" value="@msgView.PageSize" name="PageSize" id="PageSize" />
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" value="保存" id="btnSave" />
+                    <input type="submit" value="Save" id="btnSave" />
                 </div>
             </form>
         </div>

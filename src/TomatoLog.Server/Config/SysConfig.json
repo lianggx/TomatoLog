@@ -1,8 +1,9 @@
 {
   "Setting": {
+    "ProjectName": null,
     "On": true,
     "Time": 60,
-    "Count": 5,
+    "Count": 1,
     "Levels": "Warning;Error"
   },
   "Sms": {
@@ -13,13 +14,13 @@
     "ContentType": "application/json"
   },
   "Email": {
-    "On": false,
+    "On": true,
     "Host": "smtp.qq.com",
     "Port": 587,
-    "UserName": "xxxxxxxx@qq.com",
-    "Password": "xxxxxxxxxxxxxxxx",
-    "Receiver": "xxxxxxxxxxx@qq.com",
-    "CC": "xxxxxxxxxxx@163.com;xxxxxxxx@126.com",
+    "UserName": "2272256480@qq.com",
+    "Password": "uookijihtpwedhhg",
+    "Receiver": "386497093@qq.com",
+    "CC": null,
     "Title": "Test Send Mail Subject.{ErrorMessage}",
     "Content": "At {IP} throw Exception {ErrorMessage} <h2> ProjectName:</h2><div>{ProjectName}</div>",
     "SSL": true
