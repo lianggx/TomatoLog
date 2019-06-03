@@ -11,7 +11,7 @@
     <input type="text" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
     <div class="row col-sm-2">
         <a id="btnField" href="###" data-toggle="modal" data-target="#fieldSetting">Show Fields</a> |
-        <strong>@fileName</strong>
+        <strong><a href="/Home/Detail?Project=@msgView.Project&Label=@msgView.Label">@fileName</a></strong>
     </div>
     <div class="row col-sm-7">
         <input type="text" value="@msgView.Keyword" class="form-control" name="keyword" id="keyword" placeholder="Support MongoDB/ES syntax" />

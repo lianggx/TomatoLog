@@ -13,10 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Caching.CSRedis" Version="3.0.46" />
+    <PackageReference Include="Caching.CSRedis" Version="3.0.51" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="CSRedisCore" Version="3.0.46" />
+    <PackageReference Include="CSRedisCore" Version="3.0.60" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
     <Watch Include="..\**\*.cs" />
   </ItemGroup>

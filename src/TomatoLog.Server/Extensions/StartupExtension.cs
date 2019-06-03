@@ -128,6 +128,7 @@ namespace TomatoLog.Server.Extensions
             lifeTime.ApplicationStopping.Register(() =>
             {
                 mqManager.Stop();
+                RedisHelper.Instance.Dispose();
             });
         }
 

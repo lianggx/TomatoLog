@@ -41,7 +41,18 @@ namespace TomatoLog.Client.Extensions
 
         private static string GetStackTrace(StringBuilder sb, Exception ex)
         {
-            sb.AppendFormat("{0}#####{1}", ex.Message, ex.StackTrace);
+            sb.AppendFormat("{0}|{1}", ex.Message, ex.StackTrace);
+            var data = ex.Data;
+            if (data != null && data.Count > 0)
+            {
+                sb.Append("[");
+                foreach (var key in data.Keys)
+                {
+                    sb.AppendFormat("{0}:{1};", key, data[key]);
+                }
+                sb.Append("]");
+            }
+
             if (ex.InnerException != null)
             {
                 GetStackTrace(sb, ex.InnerException);

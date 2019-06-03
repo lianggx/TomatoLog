@@ -50,23 +50,24 @@ namespace TomatoLog.ClientRabbitMQ.XUnitTest
         [Fact]
         public async Task WriteLogAsync()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 //await client.WriteLogAsync(LogLevel.Debug, "ES Exception", null, null);
                 //await client.WriteLogAsync(LogLevel.Information, "ES Exception", null, null);
                 //await client.WriteLogAsync(LogLevel.Critical, "ES Exception", null, null);
                 //await client.WriteLogAsync(LogLevel.None, "ES Exception", null, null);
                 //await client.WriteLogAsync(LogLevel.Trace, "ES Exception", null, null);
-                await client.WriteLogAsync(1011, LogLevel.Warning, "ES Exception", null, null);
+                //await client.WriteLogAsync(1011, LogLevel.Warning, "ES Exception", null, null);
                 // await client.WriteLogAsync(LogLevel.Error, "ES Exception", null, null);
-                //try
-                //{
-                //    throw new Exception("RabbitMQ throw exception");
-                //}
-                //catch (Exception ex)
-                //{
-                //    await ex.AddTomatoLogAsync(1320);
-                //}
+                try
+                {
+                    throw new Exception("RabbitMQ throw exception");
+                }
+                catch (Exception ex)
+                {
+                    ex.Data["connection"] = "127.0.0.1";
+                    await ex.AddTomatoLogAsync(1320);
+                }
             }
         }
     }

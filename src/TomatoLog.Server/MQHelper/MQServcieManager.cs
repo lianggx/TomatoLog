@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -68,6 +69,8 @@ namespace TomatoLog.Server.MQHelper
             {
                 var ls = new LogService(logWriter, filterService, setting, logger);
                 ls.Start();
+
+                Console.WriteLine("已连接RabbitMQ...");
                 ChannelList.Add(ls);
             }
         }

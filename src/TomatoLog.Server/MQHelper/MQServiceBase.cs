@@ -51,6 +51,7 @@ namespace TomatoLog.Server.MQHelper
             {
                 Channel = CreateChannel(item.Queue, item.RouterKey, item.ExchangeType);
                 Channel.OnReceivedCallback = item.OnReceived;
+
                 this.List.Add(Channel);
             }
             started = true;

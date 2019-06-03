@@ -28,6 +28,7 @@ namespace TomatoLog.Server.MQHelper
 
         public void SmsLog_OnReceived(MessageBody message)
         {
+            Console.WriteLine(1);
             if (message.Error)
             {
                 logger.LogError(new EventId(1001), message.Exception, message.ErrorMessage);
