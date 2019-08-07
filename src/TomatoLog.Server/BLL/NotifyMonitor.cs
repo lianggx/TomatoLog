@@ -48,7 +48,7 @@ namespace TomatoLog.Server.BLL
                 }
                 catch (Exception ex)
                 {
-                    log.LogError(ex.Message, ex.StackTrace);
+                    log.LogError("{0} {1}", ex.Message, ex.StackTrace);
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace TomatoLog.Server.BLL
                 }
                 catch (Exception ex)
                 {
-                    log.LogError(ex.Message, ex.StackTrace);
+                    log.LogError("{0} {1}", ex.Message, ex.StackTrace);
                 }
             }
         }

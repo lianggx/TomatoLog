@@ -46,24 +46,29 @@
     <tbody>
         @foreach (var log in Model)
         {
-            var msg = JsonConvert.DeserializeObject<LogMessage>(log);
-            <tr data-toggle="modal" data-target="#showDetail" data-whatever="@log">
-                <td name="EventId" class="hidden">@msg.EventId</td>
-                <td name="Timestamp" class="hidden">@msg.Timestamp.ToString("yyyy/MM/dd HH:mm:ss.ms")</td>
-                <td name="ProcessId" class="hidden">@msg.ProcessId</td>
-                <td name="ProcessName" class="hidden">@msg.ProcessName</td>
-                <td name="ProjectName" class="hidden">@msg.ProjectName</td>
-                <td name="ProjectLabel" class="hidden">@msg.ProjectLabel</td>
-                <td name="ErrorMessage" class="hidden">@msg.ErrorMessage</td>
-                <td name="IP" class="hidden">@msg.IP</td>
-                <td name="MachineName" class="hidden">@msg.MachineName</td>
-                <td name="IPList" class="hidden">@string.Join("/", msg.IPList)</td>
-                <td name="LogLevel" class="hidden">@msg.LogLevel</td>
-                <td name="StackTrace" class="hidden">@msg.StackTrace</td>
-                <td name="ThreadId" class="hidden">@msg.ThreadId</td>
-                <td name="UserName" class="hidden">@msg.UserName</td>
-                <td name="Version" class="hidden">@msg.Version</td>
-            </tr>
+            LogMessage msg = null;
+            try { msg = JsonConvert.DeserializeObject<LogMessage>(log); }
+            catch { }
+            if (msg != null)
+            {
+                <tr data-toggle="modal" data-target="#showDetail" data-whatever="@log">
+                    <td name="EventId" class="hidden">@msg.EventId</td>
+                    <td name="Timestamp" class="hidden">@msg.Timestamp.ToString("yyyy/MM/dd HH:mm:ss.ms")</td>
+                    <td name="ProcessId" class="hidden">@msg.ProcessId</td>
+                    <td name="ProcessName" class="hidden">@msg.ProcessName</td>
+                    <td name="ProjectName" class="hidden">@msg.ProjectName</td>
+                    <td name="ProjectLabel" class="hidden">@msg.ProjectLabel</td>
+                    <td name="ErrorMessage" class="hidden">@msg.ErrorMessage</td>
+                    <td name="IP" class="hidden">@msg.IP</td>
+                    <td name="MachineName" class="hidden">@msg.MachineName</td>
+                    <td name="IPList" class="hidden">@string.Join("/", msg.IPList)</td>
+                    <td name="LogLevel" class="hidden">@msg.LogLevel</td>
+                    <td name="StackTrace" class="hidden">@msg.StackTrace</td>
+                    <td name="ThreadId" class="hidden">@msg.ThreadId</td>
+                    <td name="UserName" class="hidden">@msg.UserName</td>
+                    <td name="Version" class="hidden">@msg.Version</td>
+                </tr>
+            }
         }
     </tbody>
 </table>
