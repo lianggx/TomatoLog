@@ -18,11 +18,12 @@ The TomatoLog Server can store the logging data into File, MongoDB, or Elastic S
 
 ### Using the client side
 
-Choose to install either of the following two clients
+Choose to install either of the following clients
 
 ``` C#
 Install-Package TomatoLog.Client.Redis
 Install-Package TomatoLog.Client.RabbitMQ
+Install-Package TomatoLog.Client.Kafka
 ```
 
 ### Configure TomatoLogClient

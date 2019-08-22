@@ -16,11 +16,12 @@ TomatoLog 服务端还提供了三种存储日志的方式，分别是 File、Mo
 
 ### 使用客户端
 
-选择安装以下两种客户端中的任意一项
+选择安装以下客户端中的任意一项
 
 ``` C#
 Install-Package TomatoLog.Client.Redis
 Install-Package TomatoLog.Client.RabbitMQ
+Install-Package TomatoLog.Client.Kafka
 ```
 
 ### 配置客户端
