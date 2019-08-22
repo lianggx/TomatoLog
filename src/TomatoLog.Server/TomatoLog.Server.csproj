@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <PackageLicenseUrl>https://github.com/lianggx/TomatoLog/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>lianggx</Authors>
     <Product>TomatoLog</Product>
     <PackageProjectUrl>https://github.com/lianggx/TomatoLog</PackageProjectUrl>
