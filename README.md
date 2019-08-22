@@ -147,7 +147,11 @@ download the server-side compressed package file ![TomatoLog](https://github.com
         "RouteKey": "All",
         "Channels": 1 // the number of instances of message queue
       },
-      "Kafka": null // under construction
+      "Kafka": {
+        "Group": "TomatoLogServer",
+        "BootstrapServers": "127.0.0.1:9092",
+        "Topic": "TomatoLog"
+      }
     }
   }
 }

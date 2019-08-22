@@ -28,6 +28,11 @@ namespace TomatoLog.Server.BLL
 
         public async void Filter(LogMessage log)
         {
+            if (log == null)
+            {
+                logger.LogError("The Message was null.");
+                return;
+            }
             ReportViewModel reportModel = proManager.ConfigObject?.FirstOrDefault(f => f.Setting.ProjectName == log.ProjectName);
             var sett = reportModel?.Setting;
             if (reportModel == null || !sett.On)

@@ -8,7 +8,7 @@ namespace TomatoLog.Client.RabbitMQ.MQHelper
     {
         private EventRabbitMQOptions options;
         private static MQConnection mqc = null;
-        private ILogger logger;
+        private ILogger logger = null;
 
         public LogClient(EventRabbitMQOptions options)
         {

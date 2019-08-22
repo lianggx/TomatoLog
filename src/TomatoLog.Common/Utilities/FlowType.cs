@@ -4,6 +4,6 @@
     {
         Redis = 0,
         RabbitMQ,
-        Kafaka
+        Kafka
     }
 }

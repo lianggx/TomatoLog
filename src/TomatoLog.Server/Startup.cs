@@ -41,15 +41,16 @@ namespace TomatoLog.Server
                 builder.AddNLog().AddConsole().AddDebug();
             });
             var disCache = this.Configuration["TomatoLog:Cache-Redis"];
-            if (disCache != null)
+            if (string.IsNullOrEmpty(disCache))
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
             {
                 RedisHelper.Initialization(new CSRedis.CSRedisClient(disCache));
                 services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
             }
-            else
-            {
-                services.AddDistributedMemoryCache();
-            }
+
             services.AddSingleton<SysConfigManager>(new SysConfigManager(this.Configuration));
             services.AddSingleton<ProConfigManager>(new ProConfigManager(this.Configuration));
             services.AddLogWriter(this.Configuration);

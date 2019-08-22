@@ -145,7 +145,11 @@ Install-Package TomatoLog.Client.RabbitMQ
         "RouteKey": "All",
         "Channels": 1 // 运行的消息队列实例数量
       },
-      "Kafka": null // 待实现
+      "Kafka": {
+        "Group": "TomatoLogServer",
+        "BootstrapServers": "127.0.0.1:9092",
+        "Topic": "TomatoLog"
+      }
     }
   }
 }

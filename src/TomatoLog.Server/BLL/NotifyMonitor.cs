@@ -53,7 +53,7 @@ namespace TomatoLog.Server.BLL
             }
         }
 
-        public async void SendEmail(LogMessage msg)
+        public void SendEmail(LogMessage msg)
         {
             var email = report.Email;
             if (email != null && email.On)
@@ -62,44 +62,50 @@ namespace TomatoLog.Server.BLL
                 {
                     var title = CreateContent(msg, email.Title);
                     var data = CreateContent(msg, email.Content);
-                    MailMessage message = new MailMessage(email.UserName, email.Receiver, title, data)
-                    {
-                        IsBodyHtml = true,
-                        SubjectEncoding = Encoding.UTF8,
-                        BodyEncoding = Encoding.UTF8,
-                        Priority = MailPriority.High
-                    };
-
-                    if (email.CC != null)
-                    {
-                        foreach (var c in email.CC.Split(";"))
+                    using (
+                        MailMessage message = new MailMessage(email.UserName, email.Receiver, title, data)
                         {
-                            message.CC.Add(c);
+                            IsBodyHtml = true,
+                            SubjectEncoding = Encoding.UTF8,
+                            BodyEncoding = Encoding.UTF8,
+                            Priority = MailPriority.High
+                        })
+                    {
+                        if (email.CC != null)
+                        {
+                            foreach (var c in email.CC.Split(";"))
+                            {
+                                message.CC.Add(c);
+                            }
                         }
+
+
+                        SmtpClient smtpClient = new SmtpClient(email.Host, email.Port)
+                        {
+                            DeliveryMethod = SmtpDeliveryMethod.Network,
+                            Credentials = new System.Net.NetworkCredential(email.UserName, email.Password),
+                            EnableSsl = email.SSL
+                        };
+
+                        smtpClient.SendCompleted += (sender, e) =>
+                        {
+                            if (e.Error != null)
+                                log.LogError(e.Error.Message, e.Error);
+                        };
+
+                        log?.LogDebug($"SendEmail:{email.Host} | {email.Port} | {email.Receiver} | {email.CC} | {title} | {data}");
+                        smtpClient.Send(message);
                     }
-
-
-                    SmtpClient smtpClient = new SmtpClient(email.Host, email.Port)
-                    {
-                        DeliveryMethod = SmtpDeliveryMethod.Network,
-                        Credentials = new System.Net.NetworkCredential(email.UserName, email.Password),
-                        EnableSsl = email.SSL
-                    };
-
-                    smtpClient.SendCompleted += (sender, e) =>
-                    {
-                        if (e.Error != null)
-                            log.LogError(e.Error.Message, e.Error);
-                    };
-
-                    await smtpClient.SendMailAsync(message);
-                    smtpClient.Dispose();
-
-                    log?.LogDebug($"SendEmail:{email.Host} | {email.Port} | {email.Receiver} | {email.CC} | {title} | {data}");
                 }
                 catch (Exception ex)
                 {
-                    log.LogError("{0} {1}", ex.Message, ex.StackTrace);
+                    var innerEx = ex.InnerException;
+                    var error = "";
+                    if (innerEx != null)
+                    {
+                        error += innerEx.Message + innerEx.StackTrace;
+                    }
+                    log.LogError("{0} {1} - {2}", ex.Message, ex.StackTrace, error);
                 }
             }
         }

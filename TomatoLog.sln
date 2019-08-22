@@ -52,7 +52,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.ToFile.XUnitTest"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.ToMongoDB.XUnitTest", "test\plugins\TomatoLog.ToMongoDB.XUnitTest\TomatoLog.ToMongoDB.XUnitTest.csproj", "{8C4412F5-920F-459C-AF86-0763FFCBD410}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.Server.XUnitTest", "test\TomatoLog.Server.XUnitTest\TomatoLog.Server.XUnitTest.csproj", "{469F592E-EC38-4D15-9DAF-E1C52ED9D288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.Client.Kafka", "src\clients\TomatoLog.Client.Kafka\TomatoLog.Client.Kafka.csproj", "{F05B796C-672E-4D9F-8E2E-95E457138334}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomatoLog.Client.Kafka.XUnitTest", "test\clients\TomatoLog.Client.Kafka.XUnitTest\TomatoLog.Client.Kafka.XUnitTest.csproj", "{76007F20-1E3E-4628-8E42-C54440924EAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,10 +118,14 @@ Global
 		{8C4412F5-920F-459C-AF86-0763FFCBD410}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C4412F5-920F-459C-AF86-0763FFCBD410}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C4412F5-920F-459C-AF86-0763FFCBD410}.Release|Any CPU.Build.0 = Release|Any CPU
-		{469F592E-EC38-4D15-9DAF-E1C52ED9D288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{469F592E-EC38-4D15-9DAF-E1C52ED9D288}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{469F592E-EC38-4D15-9DAF-E1C52ED9D288}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{469F592E-EC38-4D15-9DAF-E1C52ED9D288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F05B796C-672E-4D9F-8E2E-95E457138334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F05B796C-672E-4D9F-8E2E-95E457138334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F05B796C-672E-4D9F-8E2E-95E457138334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F05B796C-672E-4D9F-8E2E-95E457138334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76007F20-1E3E-4628-8E42-C54440924EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76007F20-1E3E-4628-8E42-C54440924EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76007F20-1E3E-4628-8E42-C54440924EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76007F20-1E3E-4628-8E42-C54440924EAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,7 +149,8 @@ Global
 		{AE6418C7-F279-42E6-9F6F-67DBF5E76ACC} = {00E8288E-183B-4091-95C6-4CB89AEDEB3A}
 		{D427737A-9C9D-4C3F-A39E-A8592843F0F5} = {00E8288E-183B-4091-95C6-4CB89AEDEB3A}
 		{8C4412F5-920F-459C-AF86-0763FFCBD410} = {00E8288E-183B-4091-95C6-4CB89AEDEB3A}
-		{469F592E-EC38-4D15-9DAF-E1C52ED9D288} = {11364889-3666-4E2F-BCDD-583FDBEA8DC8}
+		{F05B796C-672E-4D9F-8E2E-95E457138334} = {429764D8-8D21-45EB-A13D-71A580D8BF1C}
+		{76007F20-1E3E-4628-8E42-C54440924EAB} = {A6BBD0C7-C5A8-4D2C-AD06-2CF6CAFB5817}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D09D4E2-2C4A-4568-A894-61269497475C}

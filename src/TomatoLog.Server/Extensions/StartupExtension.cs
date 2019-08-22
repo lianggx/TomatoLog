@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Threading;
 using TomatoLog.Common.Config;
 using TomatoLog.Common.Interface;
 using TomatoLog.Common.Utilities;
@@ -29,7 +31,7 @@ namespace TomatoLog.Server.Extensions
 
         public static IServiceCollection AddLogWriter(this IServiceCollection service, IConfiguration configuration)
         {
-            logFactory = new LoggerFactory().AddNLog();
+            logFactory = new LoggerFactory().AddNLog().AddConsole();
             logger = logFactory.CreateLogger<ILogWriter>();
             StorageOptions storage = configuration.GetSection("TomatoLog:Storage").Get<StorageOptions>();
             Check.NotNull(storage, nameof(StorageOptions));
@@ -87,8 +89,9 @@ namespace TomatoLog.Server.Extensions
                 case FlowType.RabbitMQ:
                     UseRabbitMQ(configuration);
                     break;
-                case FlowType.Kafaka:
-                    throw new NotImplementedException();
+                case FlowType.Kafka:
+                    UseKafka(configuration);
+                    break;
             }
             return app;
         }
@@ -115,6 +118,11 @@ namespace TomatoLog.Server.Extensions
                     }
                 }
             ));
+
+            lifeTime.ApplicationStopping.Register(() =>
+            {
+                RedisHelper.Instance.Dispose();
+            });
         }
 
         private static MQServcieManager mqManager = null;
@@ -128,10 +136,64 @@ namespace TomatoLog.Server.Extensions
             lifeTime.ApplicationStopping.Register(() =>
             {
                 mqManager.Stop();
-                RedisHelper.Instance.Dispose();
             });
         }
 
+        static CancellationTokenSource cts_kafka = new CancellationTokenSource();
+        private static void UseKafka(IConfiguration configuration)
+        {
+            lifeTime.ApplicationStarted.Register(() =>
+            {
+                try
+                {
+                    var conf = new Confluent.Kafka.ConsumerConfig
+                    {
+                        GroupId = configuration["TomatoLog:Flow:Kafka:Group"],
+                        BootstrapServers = configuration["TomatoLog:Flow:Kafka:BootstrapServers"],
+                        AutoOffsetReset = Confluent.Kafka.AutoOffsetReset.Earliest
+                    };
 
+                    using (var consumer = new Confluent.Kafka.ConsumerBuilder<Confluent.Kafka.Ignore, string>(conf).Build())
+                    {
+                        var topic = configuration["TomatoLog:Flow:Kafka:Topic"];
+                        consumer.Subscribe(topic);
+
+                        logger.LogInformation($"Kafka Consume started.");
+
+                        var cancellationToken = cts_kafka.Token;
+                        while (!cancellationToken.IsCancellationRequested)
+                        {
+                            Confluent.Kafka.ConsumeResult<Confluent.Kafka.Ignore, string> result = null;
+                            try
+                            {
+                                result = consumer.Consume(cancellationToken);
+                                LogMessage log = JsonConvert.DeserializeObject<LogMessage>(result.Value);
+                                logWriter.Write(log);
+                                filterService.Filter(log);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.LogError($"Error occured: {e.Message}{e.StackTrace}");
+                            }
+                            finally
+                            {
+                                consumer.Commit(result);
+                            }
+                        }
+                    }
+                }
+                catch (OperationCanceledException ex)
+                {
+                    logger.LogError("{0}/{1}", ex.Message, ex.StackTrace);
+                }
+            });
+
+            lifeTime.ApplicationStopping.Register(() =>
+            {
+                cts_kafka.Cancel();
+                logger.LogInformation($"Kafka Consume stoped.");
+            });
+
+        }
     }
 }
