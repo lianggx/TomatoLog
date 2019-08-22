@@ -5,7 +5,7 @@ TomatoLog is a service which based on the .net Core platform.
 
 The TomatoLog is a middleware that includes both client and server.  So it is very easy to be used and deployed.
 
-The client and server of TomatoLog are both built on the .net Core. Client logging data can be transferred through 3 kinds of streaming: Redis Streaming, RabbitMQ Streaming, and Kafka Streaming (which will be supported later). For the applications which not built-on .net core, you can transfer the logging data to the pipeline of Redis/RabbitMQ, by implementing the TomatoLog transferring protocol.
+The client and server of TomatoLog are both built on the .net Core. Client logging data can be transferred through 3 kinds of streaming: Redis/RabbitMQ/Kafka Streaming. For the applications which not built-on .net core, you can transfer the logging data to the pipeline of Redis/RabbitMQ, by implementing the TomatoLog transferring protocol.
 
 The TomatoLog Server can store the logging data into File, MongoDB, or Elastic Search. This can be set through the configuration file.  The TomatoLog Server provides a Web Console, which we can inquiry or search the logging data, or maintain the server filters/alter setting/notification setting.  The notifications can be sent through SMS or email.  Since the SMS messages are sent through HTTP request, so by using the different SMS HTTP request settings, we can send the notifications to the gateways which receiving messages through HTTP requests.
 
