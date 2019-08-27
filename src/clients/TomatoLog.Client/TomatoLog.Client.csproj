@@ -5,12 +5,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/lianggx/TomatoLog/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Authors>lianggx</Authors>
     <Product>TomatoLog</Product>
     <PackageProjectUrl>https://github.com/lianggx/TomatoLog</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lianggx/TomatoLog.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Implementation ILoggerFactory</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

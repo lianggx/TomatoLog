@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using TomatoLog.Client.Extensions;
-using TomatoLog.Client;
-using TomatoLog.Common.Interface;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TomatoLog.Client.Extensions;
+using TomatoLog.Common.Interface;
 
 namespace Example.Controllers
 {
@@ -14,52 +12,32 @@ namespace Example.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private ITomatoLogClient logClient;
-        public HomeController(ITomatoLogClient logClient)
+        private readonly ITomatoLogClient logClient;
+        private readonly ILogger logger;
+        public HomeController(ILogger<HomeController> logger, ITomatoLogClient logClient)
         {
+            this.logger = logger;
             this.logClient = logClient;
         }
 
-        // GET api/values
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
+            // Used by ILogger
+            this.logger.LogError("测试出错了");
+
+            // Used By ITomatoLogClient
             try
             {
-                await logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
+                await this.logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
                 throw new NotSupportedException("NotSupported Media Type");
             }
             catch (Exception ex)
             {
                 await ex.AddTomatoLogAsync();
             }
+
             return new string[] { "value1", "value2" };
-        }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

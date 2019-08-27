@@ -8,7 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="TomatoLog.Client.RabbitMQ" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\clients\TomatoLog.Client.RabbitMQ\TomatoLog.Client.RabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>

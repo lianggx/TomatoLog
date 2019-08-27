@@ -13,8 +13,9 @@ using Newtonsoft.Json;
 using TomatoLog.Client.RabbitMQ;
 using TomatoLog.Common.Config;
 using TomatoLog.Common.Interface;
+using TomatoLog.Client.Extensions;
 
-namespace Mall.Example
+namespace Example
 {
     public class Startup
     {
@@ -28,18 +29,20 @@ namespace Mall.Example
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITomatoLogClient, TomatoLogClientRabbitMQ>(factory =>
+            services.AddSingleton<ITomatoLogClient>(factory =>
             {
                 var options = this.Configuration.GetSection("TomatoLog").Get<EventRabbitMQOptions>();
                 var client = new TomatoLogClientRabbitMQ(options);
+
                 return client;
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory, ITomatoLogClient logClient)
         {
+            factory.UseTomatoLogger(logClient);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

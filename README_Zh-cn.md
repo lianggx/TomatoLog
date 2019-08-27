@@ -3,7 +3,9 @@ TomatoLog 是一个基于 .NETCore 平台的服务。
 
 The TomatoLog 是一个中间件，包含客户端、服务端，非常容易使用和部署。
 
-TomatoLog 的客户端和服务端目前都是基于 .NETCore 版本,客户端提供了三种日志流传输方式，目前实现了 Redis/RabbitMQ/Kafka 流。如果希望使用非 .NETCoer 平台的客户端，你可以自己开放其它第三方语言的客户端，通过实现 TomatoLog 传输协议，将数据传送到管道(Redis/RabbitMQ)中即可。
+客户端实现了ILoggerFactory，使用服务注入成功后即可使用，对业务入侵非常小，也支持通过客户端调用写入日志流。
+
+TomatoLog 的客户端和服务端目前都是基于 .NETCore 版本,客户端提供了三种日志流传输方式，目前实现了 Redis/RabbitMQ/Kafka 流。如果希望使用非 .NETCore 平台的客户端，你可以自己开放其它第三方语言的客户端，通过实现 TomatoLog 传输协议，将数据传送到管道(Redis/RabbitMQ/Kafka)中即可。
 
 TomatoLog 服务端还提供了三种存储日志的方式，分别是 File、MongoDB、Elasticsearch，存储方式可以通过配置文件指定。在 TomatoLog 服务端，我们还提供了一个Web 控制台，通过该控制台，可以对日志进行查询、搜索，对服务过滤器进行配置，警报配置、通知发送等等，其中，可使用的警报通知方式有：SMS 和 Email 两种方式，但是，SMS 其本质是一个 Http 请求，通过 SMS 的配置，可以实现向所有提供了 Http 接口的网关发送通知。
 
@@ -24,84 +26,107 @@ Install-Package TomatoLog.Client.RabbitMQ
 Install-Package TomatoLog.Client.Kafka
 ```
 
-### 配置客户端
+### TomatoLog客户端配置文件 appsetting.json
 
 ```
-        public void ConfigureServices(IServiceCollection services)
-        {
-			EventRabbitMQOptions options = new EventRabbitMQOptions
-            {
-                Logger = null,
-                LogLevel = Microsoft.Extensions.Logging.LogLevel.Information,
-                ProjectLabel = "20272",
-                ProjectName = "TomatoLog",
-                SysOptions = new EventSysOptions
-                {
-                    EventId = true,
-                    IP = true,
-                    IPList = true,
-                    MachineName = true,
-                    ProcessId = true,
-                    ProcessName = true,
-                    ThreadId = true,
-                    Timestamp = true,
-                    UserName = true
-                },
-                Tags = null,
-                Version = "1.0.1",
-                Exchange = "TomatoLog-Exchange",
-                ExchangeType = "direct",
-                Host = "127.0.0.1",
-                Password = "guest",
-                Port = 5672,
-                QueueName = "TomatoLog-Queue",
-                RouteKey = "All",
-                UserName = "guest",
-                vHost = "TomatoLog"
-            };
-
-			services.AddSingleton<ITomatoLogClient, TomatoLogClientRabbitMQ>(factory =>
-            {
-                var client = new TomatoLogClientRabbitMQ(options);
-                return client;
-            });
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-        }
+{
+  "TomatoLog": {
+    "LogLevel": "Information",
+    "ProjectLabel": "Example",
+    "ProjectName": "Example",
+    "SysOptions": {
+      "EventId": true,
+      "IP": true,
+      "IPList": true,
+      "MachineName": true,
+      "ProcessId": true,
+      "ProcessName": true,
+      "ThreadId": true,
+      "Timestamp": true,
+      "UserName": true
+    },
+    "Tags": null,
+    "Version": "1.0.0",
+    "Exchange": "TomatoLog-Exchange",
+    "ExchangeType": "direct",
+    "Host": "127.0.0.1",
+    "Password": "123456",
+    "Port": 5672,
+    "QueueName": "TomatoLog-Queue",
+    "RouteKey": "All",
+    "UserName": "lgx",
+    "vHost": "TomatoLog"
+  }
+}
 ```
+
+### 服务注入
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddSingleton<ITomatoLogClient>(factory =>
+    {
+        var options = this.Configuration.GetSection("TomatoLog").Get<EventRabbitMQOptions>();
+        var client = new TomatoLogClientRabbitMQ(options);
+
+        return client;
+    });
+    ...
+}
+```
+
+### 配置启用
+
+```
+public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory, ITomatoLogClient logClient)
+{
+    factory.UseTomatoLogger(logClient);
+	...
+}
+```
+
 
 ### 使用 TomatoLogClient 
 
 ```
-    public class HomeController : ControllerBase
+[Route("api/[controller]")]
+[ApiController]
+public class HomeController : ControllerBase
+{
+    private readonly ITomatoLogClient logClient;
+    private readonly ILogger logger;
+    public HomeController(ILogger<HomeController> logger, ITomatoLogClient logClient)
     {
-        private ITomatoLogClient logClient;
-        public HomeController(ITomatoLogClient logClient)
+        this.logger = logger;
+        this.logClient = logClient;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<string>>> Get()
+    {
+        // Used by ILogger
+        this.logger.LogError("测试出错了");
+
+        // Used By ITomatoLogClient
+        try
         {
-            this.logClient = logClient;
+            await this.logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
+            throw new NotSupportedException("NotSupported Media Type");
+        }
+        catch (Exception ex)
+        {
+            await ex.AddTomatoLogAsync();
         }
 
-        // GET api/values
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
-        {
-            try
-            {
-                await logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
-                throw new NotSupportedException("NotSupported Media Type");
-            }
-            catch (Exception ex)
-            {
-                await ex.AddTomatoLogAsync();
-            }
-            return new string[] { "value1", "value2" };
-        }
-	}
+        return new string[] { "value1", "value2" };
+    }
+}
 ```
 
 ### 部署服务端
 
-首先，下载服务端压缩包文件 ![TomatoLog](https://github.com/lianggx/TomatoLog/releases/download/1.0.0/TomatoLog.zip) ，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
+首先，下载服务端压缩包文件 ![TomatoLog](https://github.com/lianggx/TomatoLog/releases/download/) ，该压缩包仅包含项目运行必需文件，托管该服务端的服务器上必须按照 DotNET Core SDK 2.2+
 
 接下来，解压文件，修改 appsetting.Environment.json 文件将服务器进行配置，将配置好的服务端部署到你的服务器上，可以为 TomatoLog 选择 IIS 或者其它托管方式，服务端默认运行端口为：20272.
 

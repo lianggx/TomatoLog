@@ -9,6 +9,12 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using TomatoLog.Common.Interface;
+using Microsoft.Extensions.Options;
+using TomatoLog.Common.Config;
+using Microsoft.Extensions.Configuration;
 
 namespace TomatoLog.Client.Extensions
 {
@@ -22,8 +28,10 @@ namespace TomatoLog.Client.Extensions
         /// <returns></returns>
         public static async Task AddTomatoLogAsync(this Exception exception, int eventId = 0)
         {
-            var stackTrace = GetStackTrace(new StringBuilder(), exception);
+            if (TomatoLogClient.Instance == null)
+                throw new ArgumentNullException(nameof(TomatoLogClient.Instance));
 
+            var stackTrace = GetStackTrace(new StringBuilder(), exception);
             await TomatoLogClient.Instance.WriteLogAsync(eventId, LogLevel.Error, exception.Message, stackTrace, null);
         }
 
@@ -59,6 +67,27 @@ namespace TomatoLog.Client.Extensions
             }
 
             return sb.ToString();
+        }
+
+        public static ILoggingBuilder UseTomatoLogger(this ILoggingBuilder builder, Action<ITomatoLogClient> configure)
+        {
+            if (configure == null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
+            builder.Services.Configure(configure);
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, TomatoLogClientLoggerProvider>());
+
+            return builder;
+        }
+
+        public static ILoggerFactory UseTomatoLogger(this ILoggerFactory factory, ITomatoLogClient logClient)
+        {
+            if (logClient == null)
+                throw new ArgumentNullException(nameof(logClient));
+
+            factory.AddProvider(new TomatoLogClientLoggerProvider(logClient));
+            return factory;
         }
     }
 }

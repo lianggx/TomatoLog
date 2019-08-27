@@ -5,7 +5,7 @@ TomatoLog is a service which based on the .net Core platform.
 
 The TomatoLog is a middleware that includes both client and server.  So it is very easy to be used and deployed.
 
-The client and server of TomatoLog are both built on the .net Core. Client logging data can be transferred through 3 kinds of streaming: Redis/RabbitMQ/Kafka Streaming. For the applications which not built-on .net core, you can transfer the logging data to the pipeline of Redis/RabbitMQ, by implementing the TomatoLog transferring protocol.
+The client and server of TomatoLog are both built on the .net Core. Client logging data can be transferred through 3 kinds of streaming: Redis/RabbitMQ/Kafka Streaming. For the applications which not built-on .net core, you can transfer the logging data to the pipeline of Redis/RabbitMQ/Kafka, by implementing the TomatoLog transferring protocol.
 
 The TomatoLog Server can store the logging data into File, MongoDB, or Elastic Search. This can be set through the configuration file.  The TomatoLog Server provides a Web Console, which we can inquiry or search the logging data, or maintain the server filters/alter setting/notification setting.  The notifications can be sent through SMS or email.  Since the SMS messages are sent through HTTP request, so by using the different SMS HTTP request settings, we can send the notifications to the gateways which receiving messages through HTTP requests.
 
@@ -26,79 +26,101 @@ Install-Package TomatoLog.Client.RabbitMQ
 Install-Package TomatoLog.Client.Kafka
 ```
 
-### Configure TomatoLogClient
+### The TomatoLogClient appsetting.json
+
+```
+{
+  "TomatoLog": {
+    "LogLevel": "Information",
+    "ProjectLabel": "Example",
+    "ProjectName": "Example",
+    "SysOptions": {
+      "EventId": true,
+      "IP": true,
+      "IPList": true,
+      "MachineName": true,
+      "ProcessId": true,
+      "ProcessName": true,
+      "ThreadId": true,
+      "Timestamp": true,
+      "UserName": true
+    },
+    "Tags": null,
+    "Version": "1.0.0",
+    "Exchange": "TomatoLog-Exchange",
+    "ExchangeType": "direct",
+    "Host": "127.0.0.1",
+    "Password": "123456",
+    "Port": 5672,
+    "QueueName": "TomatoLog-Queue",
+    "RouteKey": "All",
+    "UserName": "lgx",
+    "vHost": "TomatoLog"
+  }
+}
+```
+
+### Service Injection
 
 ```C#
-        public void ConfigureServices(IServiceCollection services)
-        {
-			EventRabbitMQOptions options = new EventRabbitMQOptions
-            {
-                Logger = null,
-                LogLevel = Microsoft.Extensions.Logging.LogLevel.Information,
-                ProjectLabel = "20272",
-                ProjectName = "TomatoLog",
-                SysOptions = new EventSysOptions
-                {
-                    EventId = true,
-                    IP = true,
-                    IPList = true,
-                    MachineName = true,
-                    ProcessId = true,
-                    ProcessName = true,
-                    ThreadId = true,
-                    Timestamp = true,
-                    UserName = true
-                },
-                Tags = null,
-                Version = "1.0.1",
-                Exchange = "TomatoLog-Exchange",
-                ExchangeType = "direct",
-                Host = "127.0.0.1",
-                Password = "guest",
-                Port = 5672,
-                QueueName = "TomatoLog-Queue",
-                RouteKey = "All",
-                UserName = "guest",
-                vHost = "TomatoLog"
-            };
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddSingleton<ITomatoLogClient>(factory =>
+    {
+        var options = this.Configuration.GetSection("TomatoLog").Get<EventRabbitMQOptions>();
+        var client = new TomatoLogClientRabbitMQ(options);
 
-			services.AddSingleton<ITomatoLogClient, TomatoLogClientRabbitMQ>(factory =>
-            {
-                var client = new TomatoLogClientRabbitMQ(options);
-                return client;
-            });
+        return client;
+    });
+    ...
+}
+```
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-        }
+### Configure Enabled
+
+```
+public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory, ITomatoLogClient logClient)
+{
+    factory.UseTomatoLogger(logClient);
+	...
+}
 ```
 
 ### Using TomatoLogClient 
 
 ```C#
-    public class HomeController : ControllerBase
+[Route("api/[controller]")]
+[ApiController]
+public class HomeController : ControllerBase
+{
+    private readonly ITomatoLogClient logClient;
+    private readonly ILogger logger;
+    public HomeController(ILogger<HomeController> logger, ITomatoLogClient logClient)
     {
-        private ITomatoLogClient logClient;
-        public HomeController(ITomatoLogClient logClient)
+        this.logger = logger;
+        this.logClient = logClient;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<string>>> Get()
+    {
+        // Used by ILogger
+        this.logger.LogError("测试出错了");
+
+        // Used By ITomatoLogClient
+        try
         {
-            this.logClient = logClient;
+            await this.logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
+            throw new NotSupportedException("NotSupported Media Type");
+        }
+        catch (Exception ex)
+        {
+            await ex.AddTomatoLogAsync();
         }
 
-        // GET api/values
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
-        {
-            try
-            {
-                await logClient.WriteLogAsync(1029, LogLevel.Warning, "Warning Infomation", "Warning Content", new { LastTime = DateTime.Now, Tips = "Warning" });
-                throw new NotSupportedException("NotSupported Media Type");
-            }
-            catch (Exception ex)
-            {
-                await ex.AddTomatoLogAsync();
-            }
-            return new string[] { "value1", "value2" };
-        }
-	}
+        return new string[] { "value1", "value2" };
+    }
+}
 ```
 
 ### Setup the server side
