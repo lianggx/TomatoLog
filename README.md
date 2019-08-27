@@ -180,3 +180,26 @@ download the server-side compressed package file ![TomatoLog](https://github.com
 }
 
 ```
+
+# TomatoLog Server
+
+Open：http://localhost:20272/
+
+## Logs List
+
+![foundation](https://github.com/lianggx/pictures/blob/master/2.png)
+
+
+## Logs Detail、Search、ES/MongoDB/File Support
+
+![foundation](https://github.com/lianggx/pictures/blob/master/3.png)
+
+
+## Global logs analysis and report settings
+
+![foundation](https://github.com/lianggx/pictures/blob/master/4.png)
+
+
+## Single item customized settings
+
+![foundation](https://github.com/lianggx/pictures/blob/master/5.png)

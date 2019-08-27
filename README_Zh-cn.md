@@ -1,5 +1,5 @@
 # TomatoLog
-TomatoLog 是一个基于 .NETCore 平台的服务。
+TomatoLog 是一个基于 .NETCore 平台的产品。
 
 The TomatoLog 是一个中间件，包含客户端、服务端，非常容易使用和部署。
 
@@ -181,3 +181,30 @@ public class HomeController : ControllerBase
 }
 
 ```
+
+# 番茄日志服务端控制台长什么样
+
+在浏览器中打开地址：http://localhost:20272/
+
+## 首页看日志列表
+
+![foundation](https://github.com/lianggx/pictures/blob/master/2.png)
+
+
+## 日志详情、弹出查看详情、日志搜索、支持ES/MongoDB/File搜索
+
+![foundation](https://github.com/lianggx/pictures/blob/master/3.png)
+
+
+## 全局日志处理、警报配置
+
+![foundation](https://github.com/lianggx/pictures/blob/master/4.png)
+
+
+## 针对单个项目的详细日志处理、警报配置
+
+![foundation](https://github.com/lianggx/pictures/blob/master/5.png)
+
+# 一次打包，到处运行
+
+不管是从项目结构还是解决方案，我都强调简单就是最美的根本要求，解决方案的内容虽然看起来很多，但是你也只需要按需引用其中一个客户端就可以了，服务端更是如此，全站都打包在一个 .NETCore 的应用程序中，程序的警报配置都是存储在配置文件中的，无需数据库支持。
