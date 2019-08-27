@@ -11,7 +11,7 @@
         "dependencies": {
           "MongoDB.Driver": "2.8.0",
           "NETStandard.Library": "2.0.3",
-          "TomatoLog.Common": "1.0.2"
+          "TomatoLog.Common": "1.1.0"
         },
         "runtime": {
           "TomatoLog.ToMongoDB.dll": {}
@@ -1229,7 +1229,7 @@
           }
         }
       },
-      "TomatoLog.Common/1.0.2": {
+      "TomatoLog.Common/1.1.0": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
           "NLog": "4.5.11",
@@ -2012,7 +2012,7 @@
       "path": "system.threading.threadpool/4.3.0",
       "hashPath": "system.threading.threadpool.4.3.0.nupkg.sha512"
     },
-    "TomatoLog.Common/1.0.2": {
+    "TomatoLog.Common/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

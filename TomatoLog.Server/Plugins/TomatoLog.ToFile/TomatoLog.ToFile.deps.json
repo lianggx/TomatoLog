@@ -10,7 +10,7 @@
       "TomatoLog.ToFile/1.0.2": {
         "dependencies": {
           "NETStandard.Library": "2.0.3",
-          "TomatoLog.Common": "1.0.2"
+          "TomatoLog.Common": "1.1.0"
         },
         "runtime": {
           "TomatoLog.ToFile.dll": {}
@@ -327,7 +327,7 @@
           }
         }
       },
-      "TomatoLog.Common/1.0.2": {
+      "TomatoLog.Common/1.1.0": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
           "NLog": "4.5.11",
@@ -557,7 +557,7 @@
       "path": "system.text.encodings.web/4.5.0",
       "hashPath": "system.text.encodings.web.4.5.0.nupkg.sha512"
     },
-    "TomatoLog.Common/1.0.2": {
+    "TomatoLog.Common/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
