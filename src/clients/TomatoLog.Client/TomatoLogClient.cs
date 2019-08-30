@@ -91,8 +91,7 @@ namespace TomatoLog.Client
         {
             List<string> result = new List<string>();
             var ipList = NetworkInterface.GetAllNetworkInterfaces()
-                                         .Where(f => f.NetworkInterfaceType != NetworkInterfaceType.Loopback && f.OperationalStatus == OperationalStatus.Up)
-                                         .OrderByDescending(f => f.Speed);
+                                         .Where(f => f.NetworkInterfaceType != NetworkInterfaceType.Loopback && f.OperationalStatus == OperationalStatus.Up).ToList();
 
             foreach (var item in ipList)
             {
