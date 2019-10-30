@@ -89,12 +89,12 @@ namespace TomatoLog.ToFile
                     var files = Directory.GetFiles(dir);
                     foreach (var file in files)
                     {
-                        FileInfo fi = new FileInfo(file);
+                        var fName = file.Replace(proj, "");
                         FileDesc fd = new FileDesc
                         {
-                            FileName = fi.Name,
-                            Length = fi.Length,
-                            ModifyTime = fi.LastWriteTime
+                            FileName = fName,
+                            Length = 0,
+                            ModifyTime = DateTime.Now
                         };
                         fdList.Add(fd);
                     }
