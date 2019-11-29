@@ -14,11 +14,10 @@
 }
 
 <div class="container">
-    <div id="saveTips" class="alert alert-success hidden text-center">
+    <div id="saveTips" class="alert alert-success invisible text-center">
         <strong>Success！</strong>
     </div>
-    <h2>Report Config</h2>
-    <h2 id="tipsMessage" class="p-3 mb-2 bg-success text-white" data-placement="top"></h2>
+    <h2>Global Config</h2>
     <div class="panel panel-info">
         <form class="form-group" action="/Config/Setting" method="post">
             <div class="panel-heading bg-info">
@@ -92,7 +91,7 @@
         {
             <script type="text/javascript">
                 $(document).ready(function () {
-                    $("#saveTips").removeClass("hidden");
+                    $("#saveTips").removeClass("invisible");
                     var alertClose = setTimeout(function () {
                         $("#saveTips").slideUp();
                     }, 500);

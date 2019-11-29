@@ -7,11 +7,15 @@
     if (count == 100) { nextUrl = url + $"&Page={Model.Page + 1}"; }
     if (Model.Page > 1) { prevUrl = url + $"&Page={Model.Page - 1}"; }
 }
-<ul class="pagination">
-    @if (prevUrl != null)
-    {
-        <li><a href="@prevUrl" title="Previous Page">Previous</a></li>}
-    @if (nextUrl != null)
-    {
-        <li><a href="@nextUrl" title="Next Page">Next</a></li>}
-</ul>
+<div class="form-inline">
+    <nav aria-label="Page navigation">
+        <pl class="pagination">
+            @if (prevUrl != null)
+            {
+                <pli class="page-item"><a class="page-link" href="@prevUrl" title="Previous Page">Previous</a></pli>}
+            @if (nextUrl != null)
+            {
+                <pli class="page-item"><a class="page-link" href="@nextUrl" title="Next Page">Next</a></pli>}
+        </pl>
+    </nav>
+</div>

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using TomatoLog.Common.Interface;
 using TomatoLog.Server.Models;
 using TomatoLog.Server.ViewModels;
+using System.Collections.Generic;
+using TomatoLog.Common.Utilities;
+using Newtonsoft.Json;
 
 namespace TomatoLog.Server.Controllers
 {
@@ -31,6 +34,19 @@ namespace TomatoLog.Server.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Labels([FromQuery]string proj)
+        {
+            ViewBag.Proj = proj;
+            var labels = await logWriter.GetLabels(proj);
+            List<FileDesc> list = new List<FileDesc>();
+            labels.ForEach(s =>
+            {
+                var obj = JsonConvert.DeserializeObject<FileDesc>(s);
+                list.Add(obj);
+            });
+            return View(list);
+        }
+
         public async Task<IActionResult> Detail([FromQuery]MessageViewModel model)
         {
             ViewBag.Message = model;
@@ -38,7 +54,6 @@ namespace TomatoLog.Server.Controllers
             var result = await logWriter.List(model.Project, model.Label, model.Keyword, model.Page, model.PageSize);
             return View(result);
         }
-
 
         [HttpPost]
         public IActionResult Detail([FromForm]string[] fields, [FromForm]MessageViewModel model)

@@ -1,26 +1,25 @@
 ﻿@model List<ReportViewModel>
 <div class="container">
-    <div id="saveTips" class="alert alert-success hidden text-center">
+    <div id="saveTips" class="alert alert-success invisible text-center">
         <strong>Success！</strong>
     </div>
-    <h2>TomatoLog Project Report Config</h2>
-    <h2 id="tipsMessage" class="p-3 mb-2 bg-success text-white" data-placement="top"></h2>
-    <table class="table">
+    <h2>Project Config</h2>
+    <table class="table table-striped">
         <thead>
-            <tr class="row">
-                <th>ProjectName</th>
-                <th>On</th>
-                <th>Time</th>
-                <th>Count</th>
-                <th>Levels</th>
-                <th>Options<a href="/ProConfig/Detail"><strong>+New</strong></a></th>
+            <tr>
+                <th scope="col">ProjectName</th>
+                <th scope="col">On</th>
+                <th scope="col">Time</th>
+                <th scope="col">Count</th>
+                <th scope="col">Levels</th>
+                <th scope="col">Options<a href="/ProConfig/Detail"><strong>+New</strong></a></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var c in Model)
             {
                 var sett = c.Setting;
-                <tr class="row">
+                <tr scope="row">
                     <td>@sett.ProjectName</td>
                     <td>@sett.On</td>
                     <td>@sett.Time</td>
@@ -54,10 +53,10 @@
                 $.postJSON("ProConfig/Delete", { "ProjectName": projectName }, function (data) {
                     debugger;
                     if (data.code != 0) {
-                        $("#saveTips strong").text(data.message).removeClass("hidden");
+                        $("#saveTips strong").text(data.message).removeClass("invisible");
                     }
                     else {
-                        $("#saveTips").removeClass("hidden").fadeOut(3000);
+                        $("#saveTips").removeClass("invisible").fadeOut(3000);
                         $(obj).parents("tr").remove();
                     }
                 });

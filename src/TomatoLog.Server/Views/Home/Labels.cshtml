@@ -1,0 +1,29 @@
+﻿@model List<FileDesc>
+@{
+    var displayProject = ViewBag.Proj;
+    var lastIndex = displayProject.LastIndexOf('/');
+    if (lastIndex > 0)
+    {
+        displayProject = displayProject.Substring(lastIndex + 1);
+    }
+}
+<style>
+    .list-group-item {
+        padding: 10px;
+    }
+</style>
+<div class="content">
+    <h2><a href="/Home/labels?proj=@ViewBag.Proj">@displayProject</a>日志列表</h2>
+    <div class="row log-list">
+        @foreach (var f in Model)
+        {
+            <div class="col-sm-2 detail">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="/Home/Detail?Project=@ViewBag.Proj&Label=@f.FileName" target="_self">@f.FileName</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

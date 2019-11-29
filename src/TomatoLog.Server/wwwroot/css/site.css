@@ -1,14 +1,9 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+   margin:0 auto;
 }
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
 
 /* Carousel */
 .carousel-caption p {
@@ -33,3 +28,24 @@
         display: none;
     }
 }
+
+.nav {
+    padding: 5px 0px 5px 50px;
+}
+
+    .nav a {
+        color: #ffffff;
+    }
+
+.content h2 {
+    padding: 20px;
+    margin-left: 20px;
+}
+
+.log-list .card-body:hover {
+    background: #ddd;
+    cursor: pointer;
+    color: #ffffff;
+}
+.log-list .col-sm-2{padding-left:0px;padding-right:5px;margin-bottom:5px;max-width:200px;text-align:center;}
+.hidden {display: none;}

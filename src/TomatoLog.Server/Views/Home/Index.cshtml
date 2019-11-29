@@ -2,31 +2,24 @@
     ViewData["Title"] = "TomatoLog";
     List<string> projs = ViewBag.Projects;
 }
-<h2>Project List</h2>
-<div class="row">
-    <div class="col-md-9">
-        <ul>
-            @foreach (var p in projs)
+<div class="container">
+    <h2>Project List</h2>
+    <div class="row log-list">
+        @foreach (var p in projs)
+        {
+            var displayProject = p;
+            var lastIndex = p.LastIndexOf('/');
+            if (lastIndex > 0)
             {
-                <li><a href="###" onclick="getLabels(this,'@p');">@p</a></li>
+                displayProject = p.Substring(lastIndex + 1);
             }
-        </ul>
+            <div class="col-sm-2">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="/home/labels?proj=@p" target="_self">@displayProject</a>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
-<ul class="list-group" id="labels"></ul>
-<script>
-    function getLabels(obj, proj) {
-        $.post("/log/labels", { proj: proj }, function (data) {
-            $("#labels li").remove();
-            var labels = $("#labels");
-
-            $(data).each(function (num, res) {
-                var r = JSON.parse(res);
-                $(labels).append("<li class=\"list-group-item\"><a href=\"/Home/Detail?Project=" + proj + "&Label=" + r.FileName + "\">" + r.FileName + "</a></li>");
-            });
-
-            $(obj).append(labels);
-        }, "json");
-    }
-
-</script>

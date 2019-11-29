@@ -4,134 +4,139 @@
     var fileName = System.IO.Path.Combine(msgView.Project, msgView.Label);
     ViewData["Title"] = msgView.Project;
     ViewData["Count"] = Model.Count;
+    var displayProject = msgView.Project;
+    var lastIndex = displayProject.LastIndexOf('/');
+    if (lastIndex > 0)
+    {
+        displayProject = displayProject.Substring(lastIndex + 1);
+    }
 }
-
-<form class="form-group">
-    <input type="text" value="@msgView.Project" name="Project" id="Project" hidden="hidden" />
-    <input type="text" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
-    <div class="row col-sm-2">
-        <a id="btnField" href="###" data-toggle="modal" data-target="#fieldSetting">Show Fields</a> |
-        <strong><a href="/Home/Detail?Project=@msgView.Project&Label=@msgView.Label">@fileName</a></strong>
-    </div>
-    <div class="row col-sm-7">
-        <input type="text" value="@msgView.Keyword" class="form-control" name="keyword" id="keyword" placeholder="Support MongoDB/ES syntax" />
-    </div>
-    <div class="row col-sm-2">
-        <button type="submit" class="btn btn-primary">Search</button>
-    </div>
-    <div class="row col-sm-2">
+<div class="container-fluid">
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <input type="text" value="@msgView.Project" name="Project" id="Project" hidden="hidden" />
+            <input type="text" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
+            <div>
+                <a href="/Home/labels?proj=@msgView.Project">@displayProject</a>/<a href="/Home/Detail?Project=@msgView.Project&Label=@msgView.Label">@msgView.Label</a>
+                <a class="form-control mr-sm-2" id="btnField" href="###" data-toggle="modal" data-target="#fieldSetting">Show Fields</a>
+                <input class="form-control mr-sm-2" type="search" aria-label="Search" value="@msgView.Keyword" name="keyword" id="keyword" placeholder="Support mongoDB/ES syntax" />
+                <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+            </div>
+        </form>
         @Html.Partial("DetailPage", msgView, ViewData)
-    </div>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col" name="EventId" class="hidden">EventId</th>
-            <th scope="col" name="Timestamp" class="hidden">Timestamp</th>
-            <th scope="col" name="ProcessId" class="hidden">ProcessId</th>
-            <th scope="col" name="ProcessName" class="hidden">ProcessName</th>
-            <th scope="col" name="ProjectName" class="hidden">ProjectName</th>
-            <th scope="col" name="ProjectLabel" class="hidden">ProjectLabel</th>
-            <th scope="col" name="ErrorMessage" class="hidden">ErrorMessage</th>
-            <th scope="col" name="IP" class="hidden">IP</th>
-            <th scope="col" name="MachineName" class="hidden">MachineName</th>
-            <th scope="col" name="IPList" class="hidden">IPList</th>
-            <th scope="col" name="LogLevel" class="hidden">LogLevel</th>
-            <th scope="col" name="StackTrace" class="hidden">StackTrace</th>
-            <th scope="col" name="ThreadId" class="hidden">ThreadId</th>
-            <th scope="col" name="UserName" class="hidden">UserName</th>
-            <th scope="col" name="Version" class="hidden">Version</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var log in Model)
-        {
-            LogMessage msg = null;
-            try { msg = JsonConvert.DeserializeObject<LogMessage>(log); }
-            catch { }
-            if (msg != null)
+    </nav>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col" name="EventId" class="hidden">EventId</th>
+                <th scope="col" name="Timestamp" class="hidden">Timestamp</th>
+                <th scope="col" name="ProcessId" class="hidden">ProcessId</th>
+                <th scope="col" name="ProcessName" class="hidden">ProcessName</th>
+                <th scope="col" name="ProjectName" class="hidden">ProjectName</th>
+                <th scope="col" name="ProjectLabel" class="hidden">ProjectLabel</th>
+                <th scope="col" name="ErrorMessage" class="hidden">ErrorMessage</th>
+                <th scope="col" name="IP" class="hidden">IP</th>
+                <th scope="col" name="MachineName" class="hidden">MachineName</th>
+                <th scope="col" name="IPList" class="hidden">IPList</th>
+                <th scope="col" name="LogLevel" class="hidden">LogLevel</th>
+                <th scope="col" name="StackTrace" class="hidden">StackTrace</th>
+                <th scope="col" name="ThreadId" class="hidden">ThreadId</th>
+                <th scope="col" name="UserName" class="hidden">UserName</th>
+                <th scope="col" name="Version" class="hidden">Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
             {
-                <tr data-toggle="modal" data-target="#showDetail" data-whatever="@log">
-                    <td name="EventId" class="hidden">@msg.EventId</td>
-                    <td name="Timestamp" class="hidden">@msg.Timestamp.ToString("yyyy/MM/dd HH:mm:ss.ms")</td>
-                    <td name="ProcessId" class="hidden">@msg.ProcessId</td>
-                    <td name="ProcessName" class="hidden">@msg.ProcessName</td>
-                    <td name="ProjectName" class="hidden">@msg.ProjectName</td>
-                    <td name="ProjectLabel" class="hidden">@msg.ProjectLabel</td>
-                    <td name="ErrorMessage" class="hidden">@msg.ErrorMessage</td>
-                    <td name="IP" class="hidden">@msg.IP</td>
-                    <td name="MachineName" class="hidden">@msg.MachineName</td>
-                    <td name="IPList" class="hidden">@string.Join("/", msg.IPList)</td>
-                    <td name="LogLevel" class="hidden">@msg.LogLevel</td>
-                    <td name="StackTrace" class="hidden">@msg.StackTrace</td>
-                    <td name="ThreadId" class="hidden">@msg.ThreadId</td>
-                    <td name="UserName" class="hidden">@msg.UserName</td>
-                    <td name="Version" class="hidden">@msg.Version</td>
-                </tr>
+                LogMessage msg = null;
+                try { msg = JsonConvert.DeserializeObject<LogMessage>(log); }
+                catch { }
+                if (msg != null)
+                {
+                    <tr data-toggle="modal" data-target="#showDetail" data-whatever="@log" scope="row">
+                        <td name="EventId" class="hidden">@msg.EventId</td>
+                        <td name="Timestamp" class="hidden">@msg.Timestamp.ToString("yyyy/MM/dd HH:mm:ss.ms")</td>
+                        <td name="ProcessId" class="hidden">@msg.ProcessId</td>
+                        <td name="ProcessName" class="hidden">@msg.ProcessName</td>
+                        <td name="ProjectName" class="hidden">@msg.ProjectName</td>
+                        <td name="ProjectLabel" class="hidden">@msg.ProjectLabel</td>
+                        <td name="ErrorMessage" class="hidden">@msg.ErrorMessage</td>
+                        <td name="IP" class="hidden">@msg.IP</td>
+                        <td name="MachineName" class="hidden">@msg.MachineName</td>
+                        <td name="IPList" class="hidden">@string.Join("/", msg.IPList)</td>
+                        <td name="LogLevel" class="hidden">@msg.LogLevel</td>
+                        <td name="StackTrace" class="hidden">@msg.StackTrace</td>
+                        <td name="ThreadId" class="hidden">@msg.ThreadId</td>
+                        <td name="UserName" class="hidden">@msg.UserName</td>
+                        <td name="Version" class="hidden">@msg.Version</td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
-@Html.Partial("DetailPage", msgView, ViewData)
-<div class="modal fade" id="showDetail" tabindex="-1" role="dialog" aria-labelledby="showDetail" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="showDetail">Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <textarea style="height:608px;width:570px;" disabled="disabled"></textarea>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="fieldSetting" tabindex="-1" role="dialog" aria-labelledby="fieldSetting" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="fieldSetting">Show Fields</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form method="post">
+        </tbody>
+    </table>
+    @Html.Partial("DetailPage", msgView, ViewData)
+    <div class="modal fade" id="showDetail" tabindex="-1" role="dialog" aria-labelledby="showDetail" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width:650px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showDetail">Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
-                    <select multiple="multiple" name="fields" id="fields">
-                        <option value="EventId">EventId</option>
-                        <option value="Timestamp">Timestamp</option>
-                        <option value="IP">IP</option>
-                        <option value="IPList">IPList</option>
-                        <option value="ErrorMessage">ErrorMessage</option>
-                        <option value="StackTrace">StackTrace</option>
-                        <option value="LogLevel">LogLevel</option>
-                        <option value="MachineName">MachineName</option>
-                        <option value="ProcessId">ProcessId</option>
-                        <option value="ProcessName">ProcessName</option>
-                        <option value="ProjectLabel">ProjectLabel</option>
-                        <option value="ProjectName">ProjectName</option>
-                        <option value="ThreadId">ThreadId</option>
-                        <option value="UserName">UserName</option>
-                        <option value="Version">Version</option>
-                    </select>
-                    <input type="hidden" value="@string.Join(',',ViewBag.FIELDS)" id="txtFields" />
-                    <input type="hidden" value="@msgView.Project" name="Project" id="Project" hidden="hidden" />
-                    <input type="hidden" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
-                    <input type="hidden" value="@msgView.Keyword" name="Keyword" id="Keyword" />
-                    <input type="hidden" value="@msgView.Page" name="Page" id="Page" />
-                    <input type="hidden" value="@msgView.PageSize" name="PageSize" id="PageSize" />
+                    <pre></pre>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" value="Save" id="btnSave" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="fieldSetting" tabindex="-1" role="dialog" aria-labelledby="fieldSetting" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fieldSetting">Show Fields</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post">
+                    <div class="modal-body">
+                        <select multiple="multiple" name="fields" id="fields">
+                            <option value="EventId">EventId</option>
+                            <option value="Timestamp">Timestamp</option>
+                            <option value="IP">IP</option>
+                            <option value="IPList">IPList</option>
+                            <option value="ErrorMessage">ErrorMessage</option>
+                            <option value="StackTrace">StackTrace</option>
+                            <option value="LogLevel">LogLevel</option>
+                            <option value="MachineName">MachineName</option>
+                            <option value="ProcessId">ProcessId</option>
+                            <option value="ProcessName">ProcessName</option>
+                            <option value="ProjectLabel">ProjectLabel</option>
+                            <option value="ProjectName">ProjectName</option>
+                            <option value="ThreadId">ThreadId</option>
+                            <option value="UserName">UserName</option>
+                            <option value="Version">Version</option>
+                        </select>
+                        <input type="hidden" value="@string.Join(',',ViewBag.FIELDS)" id="txtFields" />
+                        <input type="hidden" value="@msgView.Project" name="Project" id="Project" hidden="hidden" />
+                        <input type="hidden" value="@msgView.Label" name="Label" id="Label" hidden="hidden" />
+                        <input type="hidden" value="@msgView.Keyword" name="Keyword" id="Keyword" />
+                        <input type="hidden" value="@msgView.Page" name="Page" id="Page" />
+                        <input type="hidden" value="@msgView.PageSize" name="PageSize" id="PageSize" />
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Save" id="btnSave" />
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 <link href="~/lib/bootstrap/dist/css/bootstrap-duallistbox.min.css" rel="stylesheet" />
 @section Scripts{
     <script src="~/lib/bootstrap/dist/js/jquery.bootstrap-duallistbox.min.js"></script>
@@ -140,8 +145,8 @@
             var fs = $("#txtFields").val().split(",");
             $(fs).each(function (d, f) {
                 $("#fields option[value='" + f + "']").attr("selected", "selected");
-                $("table tr th[name='" + f + "']").removeClass("hidden");
-                $("table tr td[name='" + f + "']").removeClass("hidden");
+                $(".table tr th[name='" + f + "']").removeClass("hidden");
+                $(".table tr td[name='" + f + "']").removeClass("hidden");
             });
             console.log($("#fields option").val());
             var fields = $('#fields').bootstrapDualListbox({
@@ -163,9 +168,75 @@
         $('#showDetail').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var recipient = button.data('whatever');
-            recipient = JSON.stringify(recipient, null, 5);
+            recipient = JSON.stringify(recipient, null, '\t');
             var modal = $(this);
-            modal.find('.modal-body textarea').val(recipient);
+            modal.find('.modal-body pre').html(syntaxHighlight(recipient));
         })
     </script>
+    <script>
+        function syntaxHighlight(json) {
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+    </script>
 }
+<style>
+    .form-inline div {
+        margin: 10px;
+    }
+
+    .form-inline input {
+        width: 300px;
+    }
+
+    .modal-body div {
+        padding: 20px;
+        word-wrap: break-word;
+    }
+
+    pre {
+        outline: 1px solid #ccc;
+        padding: 5px;
+        margin: 5px;
+        word-break: break-all;
+        white-space: pre-wrap;
+    }
+
+    .string {
+        color: green;
+    }
+    /*字符串的样式*/
+    .number {
+        color: darkorange;
+    }
+    /*数字的样式*/
+    .boolean {
+        color: blue;
+    }
+    /*布尔型数据的样式*/
+    .null {
+        color: magenta;
+    }
+    /*null值的样式*/
+    .key {
+        color: red;
+    }
+    /*key值的样式*/
+</style>

@@ -1225,7 +1225,7 @@
         "runtime": {
           "lib/netstandard1.3/System.Threading.ThreadPool.dll": {
             "assemblyVersion": "4.0.11.0",
-            "fileVersion": "4.6.24705.1"
+            "fileVersion": "4.6.24702.1"
           }
         }
       },
@@ -1511,7 +1511,7 @@
     "runtime.native.System.Net.Security/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ARfgeRYF2AnYIcqEvy9VE0agN/3zexMMPtcegq1THpOMS63rIGMi706vCo6pbv9Xzw4qhdX1Gu1zyLZHj2WtLA==",
+      "sha512": "sha512-zjSIBdddAnHaNrPk1b5ILBgTR9Sdwi+EAC+24tRV3qVq4xdij7mx6wR4XbbLa9t92zbnfT9D0S9LFp876dfeEQ==",
       "path": "runtime.native.system.net.security/4.3.0",
       "hashPath": "runtime.native.system.net.security.4.3.0.nupkg.sha512"
     },
@@ -1756,7 +1756,7 @@
     "System.Net.NameResolution/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-AFYl08R7MrsrEjqpQWTZWBadqXyTzNDaWpMqyxhb0d6sGhV6xMDKueuBXlLL30gz+DIRY6MpdgnHWlCh5wmq9w==",
+      "sha512": "sha512-UyodRGthX/86+QYdo4ACZ2XONj5Ec045YVwElpA891N8+/T0QaF+R8VEO8jn3yeumho4/WfYrRfk7TkluRynsw==",
       "path": "system.net.nameresolution/4.3.0",
       "hashPath": "system.net.nameresolution.4.3.0.nupkg.sha512"
     },
@@ -1889,7 +1889,7 @@
     "System.Security.Claims/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-P/+BR/2lnc4PNDHt/TPBAWHVMLMRHsyYZbU1NphW4HIWzCggz8mJbTQQ3MKljFE7LS3WagmVFuBgoLcFzYXlkA==",
+      "sha512": "sha512-n/MC2TCXDjHjOdU8UQnWhM9FgE5e++z8m6HW4xrum+jV/ZH0SuCYQt/hyPyJiDODo3grEWOVzhW29mAL7VpAiA==",
       "path": "system.security.claims/4.3.0",
       "hashPath": "system.security.claims.4.3.0.nupkg.sha512"
     },
@@ -1945,14 +1945,14 @@
     "System.Security.Principal/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-I1tkfQlAoMM2URscUtpcRo/hX0jinXx6a/KUtEQoz3owaYwl3qwsO8cbzYVVnjxrzxjHo3nJC+62uolgeGIS9A==",
+      "sha512": "sha512-xfm+bWtDSCgnbHJVpZIPqBcsq9zeTq9yXIz8Bjgw15QeNqqbq8Bq3foFfdJch/Z1horX/qJj4bP6bx2aG0XU9g==",
       "path": "system.security.principal/4.3.0",
       "hashPath": "system.security.principal.4.3.0.nupkg.sha512"
     },
     "System.Security.Principal.Windows/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-HVL1rvqYtnRCxFsYag/2le/ZfKLK4yMw79+s6FmKXbSCNN0JeAhrYxnRAHFoWRa0dEojsDcbBSpH3l22QxAVyw==",
+      "sha512": "sha512-ZEGSd3zUKgPl791nTMIp5pXQ9KyMhPsyKf011fp3J0Q16K8w7I4AWXj7dzsS8jeBqtEN1zampREG1g9EZNijbQ==",
       "path": "system.security.principal.windows/4.3.0",
       "hashPath": "system.security.principal.windows.4.3.0.nupkg.sha512"
     },
@@ -2008,7 +2008,7 @@
     "System.Threading.ThreadPool/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-k/+g4b7vjdd4aix83sTgC9VG6oXYKAktSfNIJUNGxPEj7ryEOfzHHhfnmsZvjxawwcD9HyWXKCXmPjX8U4zeSw==",
+      "sha512": "sha512-575wMrVtWOgxHlyHqSH3PUbN4RyMWSFfSipCvK3vmCrt1Q6GGRPKbs3mSwJnHrZVy4L91S9HeLr7VVEdKQaXSQ==",
       "path": "system.threading.threadpool/4.3.0",
       "hashPath": "system.threading.threadpool.4.3.0.nupkg.sha512"
     },
