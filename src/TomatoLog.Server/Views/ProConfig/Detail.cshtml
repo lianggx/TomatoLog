@@ -9,7 +9,7 @@
     }
 }
 
-<div class="container">
+<div class="container warning-config">
     <div id="saveTips" class="alert alert-success invisible text-center">
         <strong>Success！</strong>
     </div>
@@ -22,13 +22,20 @@
             </div>
         </div>
     }
-    <h2>Report Config</h2>
+
     <form class="form-group" action="/ProConfig/Detail" method="post">
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <a href="/ProConfig" class="btn btn-success">Back to list</a>
-        <div class="panel panel-info">
-            <div class="panel-heading bg-info"></div>
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-header">
+                <h2>Report Config</h2>
+            </div>
+            <div class="card-body">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a href="/ProConfig" class="btn btn-success">Back to list</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Root Configuration</div>
+            <div class="card-body">
                 ProjectName <input class="form-control" type="text" id="Setting_ProjectName" name="Setting_ProjectName" value="@Model.Setting_ProjectName" />
                 Enable <input class="form-control" type="text" id="Setting_On" name="Setting_On" value="@Model.Setting_On.ToString().ToLower()" />
                 Report stage（Seconds）<input class="form-control" type="text" id="Setting_Time" name="Setting_Time" value="@Model.Setting_Time" />
@@ -37,9 +44,9 @@
                 <input class="form-control" type="text" id="Setting_Levels" name="Setting_Levels" value="@Model.Setting_Levels" />
             </div>
         </div>
-        <div class="panel panel-danger">
-            <div class="panel-heading bg-danger"></div>
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-header">Sms Configuration</div>
+            <div class="card-body">
                 Enable<input class="form-control" type="text" id="Sms_On" name="Sms_On" value="@Model.Sms_On.ToString().ToLower()" />
                 Url<input class="form-control" type="text" id="Sms_Url" name="Sms_Url" value="@Model.Sms_Url" />
                 HttpMethoed<input class="form-control" type="text" id="Sms_Method" name="Sms_Method" value="@Model.Sms_Method" />
@@ -48,9 +55,9 @@
                 <textarea class="form-control" id="Sms_Content" name="Sms_Content">@Model.Sms_Content</textarea>
             </div>
         </div>
-        <div class="panel panel-success">
-            <div class="panel-heading bg-success"></div>
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-header">Email Configuration</div>
+            <div class="card-body">
                 Enable<input class="form-control" type="text" id="Email_On" name="Email_On" value="@Model.Email_On.ToString().ToLower()" />
                 Mailbox<input class="form-control" type="text" id="Email_UserName" name="Email_UserName" value="@Model.Email_UserName" />
                 Password<input class="form-control" type="text" id="Email_Password" name="Email_Password" value="@Model.Email_Password" />

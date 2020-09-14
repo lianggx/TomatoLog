@@ -13,14 +13,14 @@
     var email = Model.Email;
 }
 
-<div class="container">
+<div class="container warning-config">
     <div id="saveTips" class="alert alert-success invisible text-center">
         <strong>Success！</strong>
     </div>
-    <h2>Global Config</h2>
-    <div class="panel panel-info">
+    <h2>Global Configuration</h2>
+    <div class="card">
         <form class="form-group" action="/Config/Setting" method="post">
-            <div class="panel-heading bg-info">
+            <div class="card-header">
                 <nav class="navbar navbar-light bg-light">
                     <div class="navbar-brand">
                         <label>Foundation</label>
@@ -28,7 +28,7 @@
                     </div>
                 </nav>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 Enable <input class="form-control" type="text" id="On" name="On" value="@sett.On.ToString().ToLower()" />
                 Report stage（Seconds）<input class="form-control" type="text" id="Time" name="Time" value="@sett.Time" />
                 Trigger threshold<input class="form-control" type="text" id="Count" name="Count" value="@sett.Count" />
@@ -37,17 +37,17 @@
             </div>
         </form>
     </div>
-    <div class="panel panel-danger">
+    <div class="card">
         <form class="form-group" action="/Config/Sms" method="post">
-            <div class="panel-heading bg-danger">
+            <div class="card-header">
                 <nav class="navbar navbar-light bg-light">
                     <div class="navbar-brand">
-                        <label>SMS Config</label>
+                        <label>SMS Configuration</label>
                         <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
                 </nav>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 Enable<input class="form-control" type="text" id="On" name="On" value="@sms.On.ToString().ToLower()" />
                 Url<input class="form-control" type="text" id="Url" name="Url" value="@sms.Url" />
                 HttpMethoed<input class="form-control" type="text" id="Method" name="Method" value="@sms.Method" />
@@ -57,17 +57,17 @@
             </div>
         </form>
     </div>
-    <div class="panel panel-success">
+    <div class="card">
         <form class="form-group" action="/Config/Email" method="post">
-            <div class="panel-heading bg-success">
+            <div class="card-header">
                 <nav class="navbar navbar-light bg-light">
                     <div class="navbar-brand">
-                        <label>Email Config</label>
+                        <label>Email Configuration</label>
                         <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
                 </nav>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 Enable<input class="form-control" type="text" id="On" name="On" value="@email.On.ToString().ToLower()" />
                 Mailbox<input class="form-control" type="text" id="UserName" name="UserName" value="@email.UserName" />
                 Password<input class="form-control" type="text" id="Password" name="Password" value="@email.Password" />

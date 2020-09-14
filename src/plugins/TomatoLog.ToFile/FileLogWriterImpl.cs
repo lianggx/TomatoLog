@@ -11,13 +11,62 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace TomatoLog.ToFile
 {
     public class FileLogWriterImpl : LogWriter
     {
+        private const int period = 3000;
+        private const int dueTime = 5000;
+        private Timer timer = null;
+        private ConcurrentQueue<LogMessage> queue = null;
+        private bool runing = false;
         public FileLogWriterImpl(StorageOptions options, ILogger log) : base(options, log)
         {
+            timer = new Timer(new TimerCallback(TimerCallbackFlush));
+            timer.Change(dueTime, period);
+            queue = new ConcurrentQueue<LogMessage>();
+        }
+
+        private void TimerCallbackFlush(object sender)
+        {
+            if (runing)
+                return;
+            else
+                runing = true;
+
+            try
+            {
+                int count = queue.Count;
+                if (count == 0)
+                {
+                    runing = false;
+                    return;
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    LogMessage message = null;
+                    queue.TryDequeue(out message);
+                    if (message == null)
+                        continue;
+
+                    var fileName = CreateFile(message);
+                    using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        var log = JsonConvert.SerializeObject(message, Formatting.None);
+                        StreamWriter sw = new StreamWriter(fs);
+                        sw.WriteLine(log);
+                        sw.Flush();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message, e);
+            }
+            runing = false;
         }
 
         private string CreateFile(LogMessage message)
@@ -27,7 +76,7 @@ namespace TomatoLog.ToFile
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            var fileName = string.Format("{1}-{2}.log", path, message.LogLevel, DateTime.Now.ToString("yyyy-MM-dd"));
+            var fileName = string.Format("{0}-{1}.log", message.LogLevel, DateTime.Now.ToString("yyyy-MM-dd"));
             var fullFileName = Path.Combine(path, fileName);
             return fullFileName;
         }
@@ -45,23 +94,16 @@ namespace TomatoLog.ToFile
 
         public override async Task<int> Write(LogMessage message)
         {
-            int affrows = 0;
             try
             {
-                var fileName = CreateFile(message);
-                var log = JsonConvert.SerializeObject(message, Formatting.None);
-                using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                {
-                    StreamWriter sw = new StreamWriter(fs);
-                    await sw.WriteLineAsync(log);
-                    await sw.FlushAsync();
-                }
+                queue.Enqueue(message);
+                return queue.Count;
             }
             catch (Exception e)
             {
                 logger.LogError(e.Message, e);
             }
-            return affrows;
+            return 0;
         }
 
         public override async Task<List<string>> GetProjects()

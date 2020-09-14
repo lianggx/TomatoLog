@@ -22,10 +22,8 @@ namespace TomatoLog.Client.RabbitMQ.MQHelper
         public void Publish(string content)
         {
             byte[] body = MQConnection.UTF8.GetBytes(content);
-            IBasicProperties prop = new BasicProperties
-            {
-                DeliveryMode = 1
-            };
+            IBasicProperties prop = Consumer.Model.CreateBasicProperties();
+            prop.DeliveryMode = 1;
             Consumer.Model.BasicPublish(this.ExchangeName, this.RoutekeyName, false, prop, body);
         }
 
@@ -34,7 +32,7 @@ namespace TomatoLog.Client.RabbitMQ.MQHelper
             MessageBody msgBody = new MessageBody();
             try
             {
-                string content = MQConnection.UTF8.GetString(e.Body);
+                string content = MQConnection.UTF8.GetString(e.Body.ToArray());
                 msgBody.Content = content;
                 msgBody.Consumer = (EventingBasicConsumer)sender;
                 msgBody.BasicDeliver = e;

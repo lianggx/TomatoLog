@@ -3,36 +3,40 @@
     <div id="saveTips" class="alert alert-success invisible text-center">
         <strong>Success！</strong>
     </div>
-    <h2>Project Config</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">ProjectName</th>
-                <th scope="col">On</th>
-                <th scope="col">Time</th>
-                <th scope="col">Count</th>
-                <th scope="col">Levels</th>
-                <th scope="col">Options<a href="/ProConfig/Detail"><strong>+New</strong></a></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var c in Model)
-            {
-                var sett = c.Setting;
-                <tr scope="row">
-                    <td>@sett.ProjectName</td>
-                    <td>@sett.On</td>
-                    <td>@sett.Time</td>
-                    <td>@sett.Count</td>
-                    <td>@sett.Levels</td>
-                    <td>
-                        <a href="/ProConfig/Detail?projectName=@sett.ProjectName">Detail</a>
-                        <a href="###" onclick="OnDelete(this,'@sett.ProjectName')">Delete</a>
-                    </td>
+    <div class="card">
+        <div class="card-header">
+            <h2>Project Config</h2>
+        </div>
+        <table class="table table-striped card-body">
+            <thead>
+                <tr>
+                    <th scope="col">ProjectName</th>
+                    <th scope="col">On</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Levels</th>
+                    <th scope="col">Options<a href="/ProConfig/Detail"><strong>+New</strong></a></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    var sett = c.Setting;
+                    <tr scope="row">
+                        <td>@sett.ProjectName</td>
+                        <td>@sett.On</td>
+                        <td>@sett.Time</td>
+                        <td>@sett.Count</td>
+                        <td>@sett.Levels</td>
+                        <td>
+                            <a href="/ProConfig/Detail?projectName=@sett.ProjectName">Detail</a>
+                            <a href="###" onclick="OnDelete(this,'@sett.ProjectName')">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @section Scripts{
