@@ -1,12 +1,13 @@
-{
+﻿{
   "profiles": {
     "TomatoLog.Server": {
       "commandName": "Project",
+      "dotnetRunMessages": "true",
       "launchBrowser": true,
+      "applicationUrl": "http://0.0.0.0:20272",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:20272/"
+      }
     }
   }
 }

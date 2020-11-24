@@ -1,16 +1,18 @@
-﻿
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using NLog.Extensions.Logging;
+using StackExchange.Redis;
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using TomatoLog.Common.Config;
 using TomatoLog.Common.Interface;
@@ -26,12 +28,32 @@ namespace TomatoLog.Server.Extensions
         private static ILogWriter logWriter = null;
         private static SysConfigManager sysConfigManager = null;
         private static FilterService filterService = null;
-        private static IApplicationLifetime lifeTime = null;
+        private static IHostApplicationLifetime lifeTime = null;
         private static ILogger logger = null;
+
+        public static IServiceCollection AddCustomerDistributedCache(this IServiceCollection services, IConfiguration configuration)
+        {
+            var distributedConfig = configuration["TomatoLog:Cache-Redis"];
+            if (string.IsNullOrEmpty(distributedConfig))
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = distributedConfig;
+                    options.InstanceName = "TomatoLog";
+                    options.ConfigurationOptions.ClientName = "TomatoLogServer";
+                });
+            }
+
+            return services;
+        }
 
         public static IServiceCollection AddLogWriter(this IServiceCollection service, IConfiguration configuration)
         {
-            logFactory = new LoggerFactory().AddNLog().AddConsole();
+            logFactory = new LoggerFactory().AddNLog();
             logger = logFactory.CreateLogger<ILogWriter>();
             StorageOptions storage = configuration.GetSection("TomatoLog:Storage").Get<StorageOptions>();
             Check.NotNull(storage, nameof(StorageOptions));
@@ -60,8 +82,9 @@ namespace TomatoLog.Server.Extensions
                 }
 
                 if (logWriter == null)
-                    throw new ArgumentOutOfRangeException("The Storage:Type required!");
-                service.AddSingleton<ILogWriter>(logWriter);
+                    throw new ArgumentOutOfRangeException(paramName: "The Storage:Type required!");
+
+                service.AddSingleton(logWriter);
             }
             catch (Exception ex)
             {
@@ -75,16 +98,17 @@ namespace TomatoLog.Server.Extensions
                                                        IDistributedCache cache,
                                                        SysConfigManager sysManager,
                                                        ProConfigManager proManager,
-                                                       IApplicationLifetime lifetime)
+                                                       IHostApplicationLifetime lifetime,
+                                                       HttpClient httpClient)
         {
             lifeTime = lifetime;
             sysConfigManager = sysManager;
-            filterService = new FilterService(configuration, cache, sysManager, proManager, logger);
+            filterService = new FilterService(configuration, cache, sysManager, proManager, logger, httpClient);
             var flowType = configuration.GetSection("TomatoLog:Flow:Type").Get<FlowType>();
             switch (flowType)
             {
                 default:
-                    UseRedis(configuration, cache);
+                    UseRedis(configuration);
                     break;
                 case FlowType.RabbitMQ:
                     UseRabbitMQ(configuration);
@@ -96,32 +120,28 @@ namespace TomatoLog.Server.Extensions
             return app;
         }
 
-        private static void UseRedis(IConfiguration configuration, IDistributedCache cache)
+        private static ConnectionMultiplexer multiplexer;
+        private static void UseRedis(IConfiguration configuration)
         {
             var connectionString = configuration["TomatoLog:Flow:Redis:Connection"];
-            var channel = configuration["TomatoLog:Flow:Redis:Channel"];
+            var channelName = configuration["TomatoLog:Flow:Redis:Channel"];
             Check.NotNull(connectionString, "TomatoLog:Flow:Redis:Connection");
-            Check.NotNull(channel, "TomatoLog:Flow:Redis:Channel");
+            Check.NotNull(channelName, "TomatoLog:Flow:Redis:Channel");
 
-            RedisHelper.Initialization(new CSRedis.CSRedisClient(connectionString));
-            RedisHelper.Subscribe((channel, data =>
-                {
-                    try
-                    {
-                        LogMessage log = JsonConvert.DeserializeObject<LogMessage>(data.Body);
-                        logWriter.Write(log);
-                        filterService.Filter(log);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex.Message + "|" + data.Body, ex);
-                    }
-                }
-            ));
-
-            lifeTime.ApplicationStopping.Register(() =>
+            multiplexer = ConnectionMultiplexer.Connect(connectionString);
+            var channel = multiplexer.GetSubscriber().Subscribe(channelName);
+            channel.OnMessage(message =>
             {
-                RedisHelper.Instance.Dispose();
+                try
+                {
+                    LogMessage log = JsonSerializer.Deserialize<LogMessage>(message.Message);
+                    logWriter.Write(log);
+                    filterService.Filter(log);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex.Message + "|" + message.Message, ex);
+                }
             });
         }
 
@@ -139,7 +159,7 @@ namespace TomatoLog.Server.Extensions
             });
         }
 
-        static CancellationTokenSource cts_kafka = new CancellationTokenSource();
+        private readonly static CancellationTokenSource cts_kafka = new CancellationTokenSource();
         private static void UseKafka(IConfiguration configuration)
         {
             lifeTime.ApplicationStarted.Register(() =>
@@ -153,32 +173,30 @@ namespace TomatoLog.Server.Extensions
                         AutoOffsetReset = Confluent.Kafka.AutoOffsetReset.Earliest
                     };
 
-                    using (var consumer = new Confluent.Kafka.ConsumerBuilder<Confluent.Kafka.Ignore, string>(conf).Build())
+                    using var consumer = new Confluent.Kafka.ConsumerBuilder<Confluent.Kafka.Ignore, string>(conf).Build();
+                    var topic = configuration["TomatoLog:Flow:Kafka:Topic"];
+                    consumer.Subscribe(topic);
+
+                    logger.LogInformation($"Kafka Consume started.");
+
+                    var cancellationToken = cts_kafka.Token;
+                    while (!cancellationToken.IsCancellationRequested)
                     {
-                        var topic = configuration["TomatoLog:Flow:Kafka:Topic"];
-                        consumer.Subscribe(topic);
-
-                        logger.LogInformation($"Kafka Consume started.");
-
-                        var cancellationToken = cts_kafka.Token;
-                        while (!cancellationToken.IsCancellationRequested)
+                        Confluent.Kafka.ConsumeResult<Confluent.Kafka.Ignore, string> result = null;
+                        try
                         {
-                            Confluent.Kafka.ConsumeResult<Confluent.Kafka.Ignore, string> result = null;
-                            try
-                            {
-                                result = consumer.Consume(cancellationToken);
-                                LogMessage log = JsonConvert.DeserializeObject<LogMessage>(result.Value);
-                                logWriter.Write(log);
-                                filterService.Filter(log);
-                            }
-                            catch (Exception e)
-                            {
-                                logger.LogError($"Error occured: {e.Message}{e.StackTrace}");
-                            }
-                            finally
-                            {
-                                consumer.Commit(result);
-                            }
+                            result = consumer.Consume(cancellationToken);
+                            LogMessage log = JsonSerializer.Deserialize<LogMessage>(result.Message.Value);
+                            logWriter.Write(log);
+                            filterService.Filter(log);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError($"Error occured: {e.Message}{e.StackTrace}");
+                        }
+                        finally
+                        {
+                            consumer.Commit(result);
                         }
                     }
                 }

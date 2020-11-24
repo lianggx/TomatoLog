@@ -9,11 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using System.Text.Json;
 using TomatoLog.Client.RabbitMQ;
 using TomatoLog.Common.Config;
 using TomatoLog.Common.Interface;
 using TomatoLog.Client.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace Example
 {
@@ -36,19 +37,24 @@ namespace Example
 
                 return client;
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory, ITomatoLogClient logClient)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory factory, ITomatoLogClient logClient)
         {
             factory.UseTomatoLogger(logClient);
-            if (env.IsDevelopment())
+            if (env.EnvironmentName == Environments.Development)
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

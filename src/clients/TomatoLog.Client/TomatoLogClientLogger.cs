@@ -1,17 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using TomatoLog.Common.Interface;
-using TomatoLog.Common.Utilities;
 
 namespace TomatoLog.Client
 {
     public class TomatoLogClientLogger : ILogger
     {
         public ITomatoLogClient LogClient { get; set; }
-        public IDisposable BeginScope<TState>(TState state) => this.ScopeProvider?.Push(state) ?? NullScope.Instance;
+        public IDisposable BeginScope<TState>(TState state) => this.ScopeProvider?.Push(state) ?? default;
 
         public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
 

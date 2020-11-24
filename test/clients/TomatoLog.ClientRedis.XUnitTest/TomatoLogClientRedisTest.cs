@@ -18,7 +18,7 @@ namespace TomatoLog.Client.XUnitTest
             EventRedisOptions options = new EventRedisOptions
             {
                 Channel = "TomatoLogChannel",
-                ConnectionString = "127.0.0.1:6379,defaultDatabase=10,password=123456,prefix=TomatoLog,abortConnect=false",
+                ConnectionString = "127.0.0.1:6379,defaultDatabase=10,password=123456",
                 Logger = null,
                 LogLevel = Microsoft.Extensions.Logging.LogLevel.Information,
                 ProjectLabel = "20272",
@@ -44,23 +44,23 @@ namespace TomatoLog.Client.XUnitTest
         [Fact]
         public async Task WriteLogAsync()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1000; i++)
             {
-                //await client.WriteLogAsync(LogLevel.Debug, "ES Exception", null, null);
-                //await client.WriteLogAsync(LogLevel.Information, "ES Exception", null, null);
-                //await client.WriteLogAsync(LogLevel.Critical, "ES Exception", null, null);
-                //await client.WriteLogAsync(LogLevel.None, "ES Exception", null, null);
-                //await client.WriteLogAsync(LogLevel.Trace, "ES Exception", null, null);
-                //await client.WriteLogAsync(LogLevel.Warning, "ES Exception", null, null);
-                // await client.WriteLogAsync(LogLevel.Error, "ES Exception", null, null);
-                try
-                {
-                    throw new Exception("RabbitMQ throw exception");
-                }
-                catch (Exception ex)
-                {
-                    await ex.AddTomatoLogAsync(1320);
-                }
+                await client.WriteLogAsync(1001, LogLevel.Debug, "ES Exception", null, null);
+                await client.WriteLogAsync(1001, LogLevel.Information, "ES Exception", null, null);
+                await client.WriteLogAsync(1001, LogLevel.Critical, "ES Exception", null, null);
+                await client.WriteLogAsync(1001, LogLevel.None, "ES Exception", null, null);
+                await client.WriteLogAsync(1001, LogLevel.Trace, "ES Exception", null, null);
+                await client.WriteLogAsync(1001, LogLevel.Warning, "ES Exception", null, null);
+                await client.WriteLogAsync(1001, LogLevel.Error, "ES Exception", null, null);
+                //try
+                //{
+                //    throw new Exception("RabbitMQ throw exception");
+                //}
+                //catch (Exception ex)
+                //{
+                //    await ex.AddTomatoLogAsync(1320);
+                //}
             }
         }
     }

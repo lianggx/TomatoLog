@@ -27,7 +27,7 @@ namespace TomatoLog.Server.Controllers
         }
 
         [HttpGet("Detail")]
-        public IActionResult Detail([FromQuery]string projectName)
+        public IActionResult Detail([FromQuery] string projectName)
         {
             ViewBag.IsValid = ControllerContext.ModelState.IsValid;
 
@@ -67,7 +67,7 @@ namespace TomatoLog.Server.Controllers
         }
 
         [HttpPost("Detail")]
-        public IActionResult Detail([FromForm]ProjectConfigViewModel model)
+        public IActionResult Detail([FromForm] ProjectConfigViewModel model)
         {
             if (!string.IsNullOrEmpty(model.Setting_ProjectName))
             {
@@ -143,7 +143,7 @@ namespace TomatoLog.Server.Controllers
         }
 
         [HttpPost("Delete")]
-        public IActionResult Delete([FromBody]ProjectViewModel model)
+        public IActionResult Delete([FromBody] ProjectViewModel model)
         {
             if (string.IsNullOrEmpty(model.ProjectName))
             {

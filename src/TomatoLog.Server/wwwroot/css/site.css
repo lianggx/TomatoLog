@@ -1,5 +1,5 @@
 ﻿body {
-   margin:0 auto;
+    margin: 0 auto;
 }
 
 /* Wrapping element */
@@ -47,8 +47,19 @@
     cursor: pointer;
     color: #ffffff;
 }
-.log-list .col-sm-2{padding-left:0px;padding-right:5px;margin-bottom:5px;max-width:200px;text-align:center;}
-.hidden {display: none;}
+
+.log-list .col-sm-2 {
+    padding-left: 0px;
+    padding-right: 5px;
+    margin-bottom: 5px;
+    max-width: 200px;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
 .warning-config .card {
     margin-bottom: 20px;
 }

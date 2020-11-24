@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
 using TomatoLog.Common.Config;
@@ -9,13 +10,14 @@ namespace TomatoLog.Client.Redis
     public class TomatoLogClientRedis : TomatoLogClient
     {
         private EventRedisOptions optionsRedis;
+        private readonly ConnectionMultiplexer multiplexer;
         public TomatoLogClientRedis(EventRedisOptions options) : base(options)
         {
             Check.NotNull(options.ConnectionString, nameof(options.ConnectionString));
             Check.NotNull(options.Channel, nameof(options.Channel));
 
             optionsRedis = options;
-            RedisHelper.Initialization(new CSRedis.CSRedisClient(options.ConnectionString));
+            multiplexer = ConnectionMultiplexer.Connect(options.ConnectionString);
             Instance = this;
         }
 
@@ -26,7 +28,7 @@ namespace TomatoLog.Client.Redis
             try
             {
                 var log = await CreateLog(eventId, logLevel, message, content, extra);
-                await RedisHelper.PublishAsync(optionsRedis.Channel, log);
+                await multiplexer.GetSubscriber().PublishAsync(optionsRedis.Channel, log);
             }
             catch (Exception ex)
             {

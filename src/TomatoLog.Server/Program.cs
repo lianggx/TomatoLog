@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NLog.Web;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using TomatoLog.Common.Utilities;
+using System.Text.Json.Serialization;
 
 namespace TomatoLog.Server
 {
@@ -12,42 +17,40 @@ namespace TomatoLog.Server
     {
         public static void Main(string[] args)
         {
-            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
                 logger.Debug("init main");
-                BuildWebHost(args).Build().Run();
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
+                //NLog: catch setup errors
                 logger.Error(ex, "Stopped program because of exception");
                 throw;
             }
             finally
             {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 NLog.LogManager.Shutdown();
             }
         }
 
-        private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-        {
-            Console.WriteLine(e.Exception);
-        }
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    var hostport = new ConfigurationBuilder().AddJsonFile("hosting.json").Build();
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseConfiguration(hostport);
+                    webBuilder.UseKestrel();
+                });
+    }
 
-        public static IWebHostBuilder BuildWebHost(string[] args)
-        {
-            var builder = new ConfigurationBuilder().AddJsonFile("hosting.json").Build();
-
-            return WebHost.CreateDefaultBuilder(args)
-                  .UseStartup<Startup>()
-                  .UseConfiguration(builder)
-                  .ConfigureLogging(logging =>
-                  {
-                      logging.ClearProviders();
-                      logging.SetMinimumLevel(LogLevel.Trace);
-                  })
-                  .UseNLog();
-        }
+    public class TestModel
+    {
+        public string[] IPList { get; set; }
+        public LogLevel Level { get; set; }
+        public DateTime DT { get; set; }
     }
 }

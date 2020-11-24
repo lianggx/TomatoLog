@@ -23,7 +23,7 @@
                 <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
             </div>
         </form>
-        @Html.Partial("DetailPage", msgView, ViewData)
+        <partial name="DetailPage" model="@msgView" view-data="@ViewData"/>
     </nav>
     <table class="table table-striped">
         <thead>
@@ -49,7 +49,7 @@
             @foreach (var log in Model)
             {
                 LogMessage msg = null;
-                try { msg = JsonConvert.DeserializeObject<LogMessage>(log); }
+                try { msg = System.Text.Json.JsonSerializer.Deserialize<LogMessage>(log); }
                 catch { }
                 if (msg != null)
                 {
@@ -74,7 +74,9 @@
             }
         </tbody>
     </table>
-    @Html.Partial("DetailPage", msgView, ViewData)
+
+    <partial name="DetailPage", model="@msgView", view-data="@ViewData"/>
+    
     <div class="modal fade" id="showDetail" tabindex="-1" role="dialog" aria-labelledby="showDetail" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width:650px;">
             <div class="modal-content">

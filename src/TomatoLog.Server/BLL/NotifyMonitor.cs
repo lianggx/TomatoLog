@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Net.Mail;
@@ -8,16 +7,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TomatoLog.Common.Utilities;
 using TomatoLog.Server.Models;
+using System.Linq;
 
 namespace TomatoLog.Server.BLL
 {
     public class NotifyMonitor
     {
-        private Regex regex = new Regex(@"{[^}]+}");
-        private IConfiguration cfg;
-        private HttpClient httpClient;
-        private ILogger log;
-        private ReportViewModel report;
+        private readonly Regex regex = new Regex(@"{[^}]+}");
+        private readonly IConfiguration cfg;
+        private readonly HttpClient httpClient;
+        private readonly ILogger log;
+        private readonly ReportViewModel report;
 
         public NotifyMonitor(HttpClient httpClient, IConfiguration cfg, ILogger log, ReportViewModel report)
         {
@@ -37,12 +37,12 @@ namespace TomatoLog.Server.BLL
                 {
                     var data = CreateContent(msg, report.Sms.Content);
                     HttpMethod method = HttpMethod.Get;
-                    switch (report.Sms.Method.ToUpper())
+                    method = (report.Sms.Method.ToUpper()) switch
                     {
-                        case "POST": method = HttpMethod.Post; break;
-                        case "GET": method = HttpMethod.Get; break;
-                        default: throw new NotSupportedException(nameof(HttpMethod));
-                    }
+                        "POST" => HttpMethod.Post,
+                        "GET" => HttpMethod.Get,
+                        _ => throw new NotSupportedException(nameof(HttpMethod)),
+                    };
                     var res = await HttpHelper.HttpRequest(httpClient, report.Sms.Url, method, data, report.Sms.ContentType);
                     log?.LogDebug($"SendSms:{report.Sms.Url} | {data} | {res}");
                 }
@@ -62,40 +62,37 @@ namespace TomatoLog.Server.BLL
                 {
                     var title = CreateContent(msg, email.Title);
                     var data = CreateContent(msg, email.Content);
-                    using (
-                        MailMessage message = new MailMessage(email.UserName, email.Receiver, title, data)
-                        {
-                            IsBodyHtml = true,
-                            SubjectEncoding = Encoding.UTF8,
-                            BodyEncoding = Encoding.UTF8,
-                            Priority = MailPriority.High
-                        })
+                    using MailMessage message = new MailMessage(email.UserName, email.Receiver, title, data)
                     {
-                        if (email.CC != null)
+                        IsBodyHtml = true,
+                        SubjectEncoding = Encoding.UTF8,
+                        BodyEncoding = Encoding.UTF8,
+                        Priority = MailPriority.High
+                    };
+                    if (email.CC != null)
+                    {
+                        foreach (var c in email.CC.Split(";"))
                         {
-                            foreach (var c in email.CC.Split(";"))
-                            {
-                                message.CC.Add(c);
-                            }
+                            message.CC.Add(c);
                         }
-
-
-                        SmtpClient smtpClient = new SmtpClient(email.Host, email.Port)
-                        {
-                            DeliveryMethod = SmtpDeliveryMethod.Network,
-                            Credentials = new System.Net.NetworkCredential(email.UserName, email.Password),
-                            EnableSsl = email.SSL
-                        };
-
-                        smtpClient.SendCompleted += (sender, e) =>
-                        {
-                            if (e.Error != null)
-                                log.LogError(e.Error.Message, e.Error);
-                        };
-
-                        log?.LogDebug($"SendEmail:{email.Host} | {email.Port} | {email.Receiver} | {email.CC} | {title} | {data}");
-                        smtpClient.Send(message);
                     }
+
+
+                    SmtpClient smtpClient = new SmtpClient(email.Host, email.Port)
+                    {
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        Credentials = new System.Net.NetworkCredential(email.UserName, email.Password),
+                        EnableSsl = email.SSL
+                    };
+
+                    smtpClient.SendCompleted += (sender, e) =>
+                    {
+                        if (e.Error != null)
+                            log.LogError(e.Error.Message, e.Error);
+                    };
+
+                    log?.LogDebug($"SendEmail:{email.Host} | {email.Port} | {email.Receiver} | {email.CC} | {title} | {data}");
+                    smtpClient.Send(message);
                 }
                 catch (Exception ex)
                 {
@@ -112,16 +109,15 @@ namespace TomatoLog.Server.BLL
 
         private string CreateContent(LogMessage msg, string content)
         {
-            var ht = JToken.FromObject(msg);
-
+            var pis = typeof(LogMessage).GetProperties();
             var matchs = regex.Matches(content);
             for (int i = 0; i < matchs.Count; i++)
             {
                 var key = matchs[i].Value.Replace("{", "").Replace("}", "");
-                var field = ht[key];
+                var field = pis.Where(f => f.Name == key).FirstOrDefault();
                 if (field != null)
                 {
-                    var value = field.Value<string>();
+                    var value = field.GetValue(msg)?.ToString();
                     content = content.Replace(matchs[i].Value, value);
                 }
             }

@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/lianggx/TomatoLog/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>1.0.2</Version>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <Version>2.0</Version>
     <Authors>lianggx</Authors>
     <Product>TomatoLog</Product>
     <PackageProjectUrl>https://github.com/lianggx/TomatoLog</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lianggx/TomatoLog.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,7 +27,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="SET targetFolder=$(SolutionDir)TomatoLog.Server\Plugins\$(ProjectName)\&#xD;&#xA;md %targetFolder%&#xD;&#xA;copy $(OutDir)*.* %targetFolder%" />
+    <Exec Command="SET targetFolder=$(SolutionDir)\src\TomatoLog.Server\Plugins\$(ProjectName)\&#xD;&#xA;md %25targetFolder%25&#xD;&#xA;copy $(OutDir)*.* %25targetFolder%25" />
   </Target>
 
 </Project>

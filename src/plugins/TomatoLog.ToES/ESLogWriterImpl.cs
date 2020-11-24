@@ -1,21 +1,20 @@
 ﻿using Elasticsearch.Net;
-using TomatoLog.Common.Config;
-using TomatoLog.Common.Repository;
-using TomatoLog.Common.Utilities;
 using Microsoft.Extensions.Logging;
 using Nest;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using System.Threading;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Threading.Tasks;
+using TomatoLog.Common.Config;
+using TomatoLog.Common.Repository;
+using TomatoLog.Common.Utilities;
 
 namespace TomatoLog.ToES
 {
     public class ESLogWriterImpl : LogWriter
     {
-        private ElasticClient client;
+        private readonly ElasticClient client;
         public ESLogWriterImpl(StorageOptions options, ILogger log) : base(options, log)
         {
             Check.NotNull(options.ES, nameof(options.ES));
@@ -72,7 +71,7 @@ namespace TomatoLog.ToES
                     descriptor.Query(q => q.SimpleQueryString(s => s.Query(keyWrod)));
 
                 var res = await client.SearchAsync<LogMessage>(descriptor);
-                result.AddRange(res.Hits.Select(s => JsonConvert.SerializeObject(s.Source)));
+                result.AddRange(res.Hits.Select(s => JsonSerializer.Serialize(s.Source)));
             }
             catch (Exception ex)
             {

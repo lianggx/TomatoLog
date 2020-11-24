@@ -1,20 +1,10 @@
-﻿using TomatoLog.Common;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 using TomatoLog.Common.Interface;
-using Microsoft.Extensions.Options;
-using TomatoLog.Common.Config;
-using Microsoft.Extensions.Configuration;
 
 namespace TomatoLog.Client.Extensions
 {

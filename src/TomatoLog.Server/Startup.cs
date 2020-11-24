@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
-using System.Net.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using TomatoLog.Server.BLL;
 using TomatoLog.Server.Extensions;
+using System.Net.Http;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace TomatoLog.Server
 {
@@ -18,16 +22,6 @@ namespace TomatoLog.Server
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            JsonConvert.DefaultSettings = () =>
-            {
-                var st = new JsonSerializerSettings
-                {
-                    Formatting = Formatting.Indented
-                };
-                st.Converters.Add(new StringEnumConverter());
-
-                return st;
-            };
         }
 
         public IConfiguration Configuration { get; }
@@ -40,32 +34,21 @@ namespace TomatoLog.Server
                 builder.AddConfiguration(Configuration);
                 builder.AddNLog().AddConsole().AddDebug();
             });
-            var disCache = this.Configuration["TomatoLog:Cache-Redis"];
-            if (string.IsNullOrEmpty(disCache))
-            {
-                services.AddDistributedMemoryCache();
-            }
-            else
-            {
-                RedisHelper.Initialization(new CSRedis.CSRedisClient(disCache));
-                services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
-            }
 
-            services.AddSingleton<SysConfigManager>(new SysConfigManager(this.Configuration));
-            services.AddSingleton<ProConfigManager>(new ProConfigManager(this.Configuration));
-            services.AddLogWriter(this.Configuration);
-            services.AddSingleton<HttpClient>();
-            services.AddMvc();
+            services.AddCustomerDistributedCache(Configuration)
+                        .AddSingleton<SysConfigManager>()
+                        .AddSingleton<ProConfigManager>()
+                        .AddHttpClient()
+                        .AddLogWriter(this.Configuration)
+                        .AddSingleton<HttpClient>()
+                        .AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-                              IHostingEnvironment env,
-                              ILoggerFactory factory,
-                              IDistributedCache cache,
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, HttpClient httpClient, IDistributedCache cache,
                               SysConfigManager sysConfig,
                               ProConfigManager proConfig,
-                              IApplicationLifetime lifetime)
+                              IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -76,13 +59,14 @@ namespace TomatoLog.Server
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-            app.UseTomatoLog(this.Configuration, cache, sysConfig, proConfig, lifetime);
-
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseTomatoLog(this.Configuration, cache, sysConfig, proConfig, lifetime, httpClient);
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

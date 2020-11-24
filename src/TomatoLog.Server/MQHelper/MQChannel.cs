@@ -1,11 +1,7 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Framing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TomatoLog.Server.MQHelper
 {
@@ -26,10 +22,8 @@ namespace TomatoLog.Server.MQHelper
         public void Publish(string content)
         {
             byte[] body = MQConnection.UTF8.GetBytes(content);
-            IBasicProperties prop = new BasicProperties
-            {
-                DeliveryMode = 1
-            };
+            IBasicProperties prop = Consumer.Model.CreateBasicProperties();
+            prop.DeliveryMode = 1;
             Consumer.Model.BasicPublish(this.ExchangeName, this.RoutekeyName, false, prop, body);
         }
 
@@ -38,7 +32,7 @@ namespace TomatoLog.Server.MQHelper
             MessageBody msgBody = new MessageBody();
             try
             {
-                string content = MQConnection.UTF8.GetString(e.Body);
+                string content = MQConnection.UTF8.GetString(e.Body.Span);
                 msgBody.Content = content;
                 msgBody.Consumer = (EventingBasicConsumer)sender;
                 msgBody.BasicDeliver = e;

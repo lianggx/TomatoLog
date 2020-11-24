@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
 using TomatoLog.Common.Interface;
 using TomatoLog.Common.Utilities;
 using TomatoLog.Server.BLL;
@@ -35,7 +35,7 @@ namespace TomatoLog.Server.MQHelper
             }
             try
             {
-                var log = JsonConvert.DeserializeObject<LogMessage>(message.Content);
+                var log = JsonSerializer.Deserialize<LogMessage>(message.Content);
                 logWriter.Write(log);
                 filterService.Filter(log);
             }

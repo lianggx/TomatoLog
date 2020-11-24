@@ -22,21 +22,21 @@ namespace TomatoLog.Server.Controllers
         }
 
         [HttpPost("Setting")]
-        public IActionResult Setting([FromForm]SettingModel model)
+        public IActionResult Setting([FromForm] SettingModel model)
         {
             sysConfigManager.ConfigObject.Setting = model;
             return Save();
         }
 
         [HttpPost("Sms")]
-        public IActionResult Sms([FromForm]SmsModel model)
+        public IActionResult Sms([FromForm] SmsModel model)
         {
             sysConfigManager.ConfigObject.Sms = model;
             return Save();
         }
 
         [HttpPost("Email")]
-        public IActionResult Email([FromForm]EmailModel model)
+        public IActionResult Email([FromForm] EmailModel model)
         {
             sysConfigManager.ConfigObject.Email = model;
             return Save();

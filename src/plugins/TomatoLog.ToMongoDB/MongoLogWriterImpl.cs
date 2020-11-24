@@ -1,15 +1,14 @@
-﻿using TomatoLog.Common.Config;
-using TomatoLog.Common.Repository;
-using TomatoLog.Common.Utilities;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
-using MongoDB;
-using MongoDB.Driver;
-using MongoDB.Bson;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using MongoDB.Bson.Serialization;
+using TomatoLog.Common.Config;
+using TomatoLog.Common.Repository;
+using TomatoLog.Common.Utilities;
 
 namespace TomatoLog.ToMongoDB
 {
@@ -35,7 +34,7 @@ namespace TomatoLog.ToMongoDB
                     Length = 0,
                     ModifyTime = DateTime.Now
                 };
-                collections.Add(JsonConvert.SerializeObject(fd));
+                collections.Add(JsonSerializer.Serialize(fd));
             }
             return collections;
         }
@@ -72,7 +71,7 @@ namespace TomatoLog.ToMongoDB
                 {
                     bson.RemoveAt(0);
                     var log = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<LogMessage>(bson.ToJson());
-                    result.Add(JsonConvert.SerializeObject(log));
+                    result.Add(JsonSerializer.Serialize(log));
                 }
             }
             catch (Exception ex)

@@ -6,7 +6,7 @@ namespace TomatoLog.Common.Utilities
     {
         public static T NotNull<T>(T value, string parameterName)
         {
-            if (ReferenceEquals(value, null))
+            if (value == null)
             {
                 NotEmpty(parameterName, nameof(parameterName));
 

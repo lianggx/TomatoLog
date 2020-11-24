@@ -1,11 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using TomatoLog.Server.Models;
+using System.Text.Json;
 
 namespace TomatoLog.Server.BLL
 {
@@ -22,7 +16,7 @@ namespace TomatoLog.Server.BLL
         public T Load()
         {
             var json = System.IO.File.ReadAllText(ConfigFile);
-            this.ConfigObject = JsonConvert.DeserializeObject<T>(json);
+            this.ConfigObject = JsonSerializer.Deserialize<T>(json);
 
             return ConfigObject;
         }
@@ -30,7 +24,7 @@ namespace TomatoLog.Server.BLL
         public void Save()
         {
             var json = System.IO.File.ReadAllText(ConfigFile);
-            System.IO.File.WriteAllText(ConfigFile, JsonConvert.SerializeObject(this.ConfigObject));
+            System.IO.File.WriteAllText(ConfigFile, JsonSerializer.Serialize(this.ConfigObject));
         }
 
         public abstract string ConfigFile { get; }

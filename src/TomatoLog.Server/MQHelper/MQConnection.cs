@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using RabbitMQ.Util;
-using System.Text;
 using RabbitMQ.Client.Events;
+using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace TomatoLog.Server.MQHelper
 {
@@ -74,9 +73,9 @@ namespace TomatoLog.Server.MQHelper
             IModel model = this.CreateModel(exchangeType, exchange, queue, routekey);
             model.BasicQos(0, 1, false);
             EventingBasicConsumer consumer = this.Receive(model, queue);
-            consumer.Registered += (object sender, ConsumerEventArgs e) => { _logger?.LogDebug($"已注册消费队列，{e.ConsumerTag}"); };
+            consumer.Registered += (object sender, ConsumerEventArgs e) => { _logger?.LogDebug($"已注册消费队列，{e.ConsumerTags}"); };
             consumer.Shutdown += (object sender, ShutdownEventArgs e) => { _logger?.LogDebug($"已关闭消费队列，{e.ReplyCode}，{e.ReplyText}"); };
-            consumer.ConsumerCancelled += (object sender, ConsumerEventArgs e) => { _logger?.LogDebug($"已退出消费队列，{e.ConsumerTag}"); };
+            consumer.ConsumerCancelled += (object sender, ConsumerEventArgs e) => { _logger?.LogDebug($"已退出消费队列，{e.ConsumerTags}"); };
 
             MQChannel channel = new MQChannel()
             {

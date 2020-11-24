@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using TomatoLog.Common.Config;
@@ -46,7 +48,7 @@ namespace TomatoLog.Client
             var hostName = Dns.GetHostName();
             var process = Process.GetCurrentProcess();
 
-            var log = new JObject()
+            Hashtable log = new Hashtable()
             {
                 {"ProjectName", opt.ProjectName },
                 {"ProjectLabel", opt.ProjectLabel },
@@ -62,7 +64,7 @@ namespace TomatoLog.Client
                 var ips = GetHostAddress();
                 log["IP"] = ips.FirstOrDefault();
                 if (sysOpt.IPList)
-                    log["IPList"] = JToken.FromObject(ips);
+                    log["IPList"] = ips;
             }
             if (sysOpt.MachineName)
                 log["MachineName"] = hostName;
@@ -82,9 +84,11 @@ namespace TomatoLog.Client
                 log["StackTrace"] = content;
 
             if (extra != null)
-                log["Extra"] = JToken.FromObject(extra);
+                log["Extra"] = extra;
 
-            return log.ToString();
+            var json = JsonSerializer.Serialize(log);
+
+            return json;
         }
 
         private List<string> GetHostAddress()

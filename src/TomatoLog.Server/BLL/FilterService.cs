@@ -16,14 +16,21 @@ namespace TomatoLog.Server.BLL
         private readonly SysConfigManager sysManager;
         private readonly ProConfigManager proManager;
         private readonly ILogger logger;
+        private readonly HttpClient httpClient;
 
-        public FilterService(IConfiguration configuration, IDistributedCache cache, SysConfigManager sysManager, ProConfigManager proManager, ILogger logger)
+        public FilterService(IConfiguration configuration,
+                                        IDistributedCache cache,
+                                        SysConfigManager sysManager,
+                                        ProConfigManager proManager,
+                                        ILogger logger,
+                                        HttpClient httpClient)
         {
             this.configuration = configuration;
             this.cache = cache;
             this.sysManager = sysManager;
             this.proManager = proManager;
             this.logger = logger;
+            this.httpClient = httpClient;
         }
 
         public async void Filter(LogMessage log)
@@ -44,7 +51,7 @@ namespace TomatoLog.Server.BLL
             if (sett.Levels != null && sett.Levels.Contains(log.LogLevel.ToString()))
             {
                 var key = $"{log.ProjectName}_{log.LogLevel}";
-                var count = await cache.GetObjectAsync<int>(key);
+                int.TryParse(await cache.GetStringAsync(key), out int count);
                 if ((count + 1) >= sett.Count)
                 {
                     Notifier(reportModel, configuration, log);
@@ -58,18 +65,17 @@ namespace TomatoLog.Server.BLL
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(sett.Time)
                         };
-                        await cache.SetObjectAsync(key, ++count, options);
+                        await cache.SetStringAsync(key, (++count).ToString(), options);
                     }
                     else
-                        await cache.SetObjectAsync(key, ++count);
+                        await cache.SetStringAsync(key, (++count).ToString());
                 }
             }
         }
 
         private void Notifier(ReportViewModel repportModel, IConfiguration configuration, LogMessage log)
         {
-            var client = HttpClientFactory.Create();
-            var notify = new NotifyMonitor(client, configuration, logger, repportModel);
+            var notify = new NotifyMonitor(httpClient, configuration, logger, repportModel);
             notify.SendSms(log);
             notify.SendEmail(log);
         }

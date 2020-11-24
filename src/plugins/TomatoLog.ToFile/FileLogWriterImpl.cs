@@ -1,18 +1,16 @@
-﻿using TomatoLog.Common.Config;
-using TomatoLog.Common.Repository;
-using TomatoLog.Common.Utilities;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading;
-using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using TomatoLog.Common.Config;
+using TomatoLog.Common.Repository;
+using TomatoLog.Common.Utilities;
 
 namespace TomatoLog.ToFile
 {
@@ -20,8 +18,8 @@ namespace TomatoLog.ToFile
     {
         private const int period = 3000;
         private const int dueTime = 5000;
-        private Timer timer = null;
-        private ConcurrentQueue<LogMessage> queue = null;
+        private readonly Timer timer = null;
+        private readonly ConcurrentQueue<LogMessage> queue = null;
         private bool runing = false;
         public FileLogWriterImpl(StorageOptions options, ILogger log) : base(options, log)
         {
@@ -47,15 +45,14 @@ namespace TomatoLog.ToFile
                 }
                 for (int i = 0; i < count; i++)
                 {
-                    LogMessage message = null;
-                    queue.TryDequeue(out message);
+                    queue.TryDequeue(out LogMessage message);
                     if (message == null)
                         continue;
 
                     var fileName = CreateFile(message);
                     using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                     {
-                        var log = JsonConvert.SerializeObject(message, Formatting.None);
+                        var log = JsonSerializer.Serialize(message);
                         StreamWriter sw = new StreamWriter(fs);
                         sw.WriteLine(log);
                         sw.Flush();
@@ -113,7 +110,7 @@ namespace TomatoLog.ToFile
             if (Directory.Exists(dir))
             {
                 var dirs = Directory.GetDirectories(dir);
-                result.AddRange(dirs.Select(d => d.Substring(d.LastIndexOf('\\') + 1)));
+                result.AddRange(dirs.Select(d => d[(d.LastIndexOf('\\') + 1)..]));
             }
 
             return result.OrderBy(f => f).ToList();
@@ -131,7 +128,9 @@ namespace TomatoLog.ToFile
                     var files = Directory.GetFiles(dir);
                     foreach (var file in files)
                     {
-                        var fName = file.Replace(proj, "");
+                        //var fName = file.Replace(proj, "");
+                        var subChar = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "\\" : "/";
+                        var fName = file.Substring(file.LastIndexOf(subChar)+1);
                         FileDesc fd = new FileDesc
                         {
                             FileName = fName,
@@ -144,7 +143,7 @@ namespace TomatoLog.ToFile
                 var orders = fdList.OrderByDescending(f => f.ModifyTime);
                 foreach (var od in orders)
                 {
-                    fileList.Add(JsonConvert.SerializeObject(od));
+                    fileList.Add(JsonSerializer.Serialize(od));
                 }
             }
             catch (Exception ex)
